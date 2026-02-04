@@ -1,10 +1,12 @@
-all: format compile run
-
 COMPILE= gcc -g -c
 LINK= gcc -g -Wall
 
 DEPENDENCIES= ${shell find ./ -name '*.c'}
-OBJECTS= ${shell find ./ -name '*.o'}
+OBJECTS= $(DEPENDENCIES:.c=.o)
+BIN_NAME= console.bin
+
+compile: ${OBJECTS}
+	${LINK} $^ -o ${BIN_NAME}
 
 %.o: %.c
 	${COMPILE} $< -o $@
@@ -12,8 +14,11 @@ OBJECTS= ${shell find ./ -name '*.o'}
 format:
 	find . -type f -name *.[ch] | xargs clang-format --style GNU -i --verbose
 
-compile: ${OBJECTS}
-	${LINK} $^ -o bin
+all: format compile run
 
 run:
-	./bin
+	./${BIN_NAME}
+
+clean:
+	rm *.o
+	rm ${BIN_NAME}
