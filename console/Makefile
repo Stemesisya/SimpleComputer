@@ -1,8 +1,7 @@
 COMPILE= gcc -g -c
 LINK= gcc -g -Wall
 
-DEPENDENCIES= ${shell find ./ -name '*.c'}
-OBJECTS= $(DEPENDENCIES:.c=.o)
+OBJECTS= ${shell find ./ -name '*.o'}
 BIN_NAME= console.bin
 
 compile: ${OBJECTS}
