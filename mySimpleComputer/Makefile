@@ -15,5 +15,6 @@ ${LIB_NAME}: ${OBJECTS}
 	${COMPILE} $< -o $@
 
 clean:
+	find . -name '*.c.temp-stream-*' -type f -delete
 	find . -name '*.o' -type f -delete
 	-rm ${LIB_NAME}

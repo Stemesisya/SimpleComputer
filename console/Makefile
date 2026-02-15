@@ -20,5 +20,6 @@ run:
 	./${BIN_NAME}
 
 clean:
+	find . -name '*.c.temp-stream-*' -type f -delete
 	find . -name '*.o' -type f -delete
 	-rm ${BIN_NAME}
