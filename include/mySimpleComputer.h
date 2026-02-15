@@ -3,10 +3,15 @@
 #define MY_SIMPLE_COMPUTER_HEADER
 
 #define REG_ALL 0x1F
+// P
 #define REG_OVERFLOW 0x1
+// 0
 #define REG_ZERO_DIV 0x2
+// M
 #define REG_OUT_OF_BOUNDS 0x4
+// T
 #define REG_TICK_IGNORE 0x8
+// E
 #define REG_INVALID_COMMAND 0x10
 
 #define BITS_PER_COMMAND 7

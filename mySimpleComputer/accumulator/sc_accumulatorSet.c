@@ -4,8 +4,9 @@ int
 sc_accumulatorSet (int value)
 {
 
-  if (value < 0 || value > MAX_CELL_VALUE)
-    return -1;
+  int validatorResult = sc_commandValidate (value);
+  if (validatorResult != 0)
+    return validatorResult;
 
   setAccumulator (value);
   return 0;

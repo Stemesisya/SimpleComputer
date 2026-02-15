@@ -9,13 +9,13 @@ sc_regSet (int regaddr, int value)
     return -1;
 
   if (value < 0 || value > REG_ALL)
-    return -1;
+    return -3;
 
   /*
   Проверяем, если пользователь пытается задать
   значение регистрам, не указанным в regaddr
   */
-  if (value & (~regaddr) > 0)
+  if ((value & (~regaddr)) > 0)
     return -2;
 
   setFlagRegister ((getFlagRegister () & (~regaddr)) | value);
