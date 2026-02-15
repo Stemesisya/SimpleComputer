@@ -9,7 +9,7 @@ void printFlags ();
 void printCell (int address);
 void printMemory ();
 
-void printCellValue(int encodedCommand);
+void printCellValue (int encodedCommand);
 void printDecodedCommand (int value);
 
 void printAccumulator ();

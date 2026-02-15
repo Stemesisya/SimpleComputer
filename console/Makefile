@@ -13,13 +13,10 @@ ${BIN_NAME}: ${OBJECTS} ${LIB}
 	${LINK} $^ -o ${BIN_NAME}
 
 %.o: %.c
-	clang-format --style GNU -i --verbose $<
 	${COMPILE} $< -o $@
 
 run:
 	./${BIN_NAME}
 
 clean:
-	find . -name '*.c.temp-stream-*' -type f -delete
-	find . -name '*.o' -type f -delete
-	-rm ${BIN_NAME}
+	find -name '${BIN_NAME}' -delete

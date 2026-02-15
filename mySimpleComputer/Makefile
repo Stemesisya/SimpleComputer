@@ -5,16 +5,13 @@ DEPENDENCIES= ${shell find ./ -name '*.c'}
 OBJECTS= $(DEPENDENCIES:.c=.o)
 LIB_NAME= libMySimpleComputer.a
 
-all: ${LIB_NAME} 
+all: ${LIB_NAME}
 
 ${LIB_NAME}: ${OBJECTS}
 	${LINK} ${LIB_NAME} $^
 
 %.o: %.c
-	clang-format --style GNU -i --verbose $<
 	${COMPILE} $< -o $@
 
 clean:
-	find . -name '*.c.temp-stream-*' -type f -delete
-	find . -name '*.o' -type f -delete
-	-rm ${LIB_NAME}
+	find -name '${LIB_NAME}' -delete
