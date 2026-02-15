@@ -6,13 +6,13 @@
 #define setCell(addr, sign, command, operand)                                 \
   sc_commandEncode (sign, command, operand, &value);                          \
   sc_memorySet (addr, value);                                                 \
-  cli_printCell (addr);                                                       \
+  printCell (addr);                                                           \
   putchar ('\n')
 
 #define setFlags(select, enable)                                              \
   sc_regSet (select, enable);                                                 \
   putchar ('[');                                                              \
-  cli_printFlags ();                                                          \
+  printFlags ();                                                              \
   putchar (']');                                                              \
   putchar ('\n')
 
@@ -27,15 +27,15 @@ main ()
   sc_memoryInit ();
   sc_regInit ();
 
-  cli_printFlags ();
+  printFlags ();
   sc_accumulatorGet (&value);
   printf (" [accumulator: ");
-  cli_printDecodedCommand (value);
+  printCellValue (value);
   sc_incounterGet (&value);
   printf (", incounter: ");
-  cli_printDecodedCommand (value);
+  printCellValue (value);
   printf ("]\n");
-  cli_printMemory ();
+  printMemory ();
 
   printPink ("Setting memory cell's values...\n");
 
@@ -51,7 +51,7 @@ main ()
   printf ("Cell 52. Expected: -0000 Got: ");
   setCell (52, 1, 0, 0);
 
-  cli_printMemory ();
+  printMemory ();
 
   printPink ("Trying to pass invalid values to cell...\n");
 
@@ -99,15 +99,14 @@ main ()
   printf ("selecting reg'0'. Enabling reg'T' Expected: -2 (Modifying "
           "non-selected flag) Got: ");
   printf ("%d\n", sc_regSet (REG_ZERO_DIV, REG_TICK_IGNORE));
-  cli_printFlags ();
+  printFlags ();
   putchar ('\n');
 
   printPink ("Set accumulator\n");
   printf ("With value -4C7F. Expected: -4C7f. Got: ");
   sc_commandEncode (1, 76, 127, &value);
   sc_accumulatorSet (value);
-  sc_accumulatorGet (&value);
-  cli_printDecodedCommand (value);
+  printAccumulator ();
   putchar ('\n');
 
   printPink ("Trying to pass to accumulator invalid values\n");
@@ -126,8 +125,7 @@ main ()
   printf ("With value -4C7F. Expected: -4C7f. Got: ");
   sc_commandEncode (1, 76, 127, &value);
   sc_incounterSet (value);
-  sc_incounterGet (&value);
-  cli_printDecodedCommand (value);
+  printCounters ();
   putchar ('\n');
 
   printPink ("Trying to pass to incounter invalid values\n");

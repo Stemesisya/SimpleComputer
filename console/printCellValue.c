@@ -1,7 +1,7 @@
 #include <console/console.h>
 
 void
-cli_printDecodedCommand (int encodedCommand)
+printCellValue (int encodedCommand)
 {
   int sign = 0;
   int command = 0;

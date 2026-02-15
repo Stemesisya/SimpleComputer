@@ -1,14 +1,14 @@
 #include <console/console.h>
 
 void
-cli_printMemory ()
+printMemory ()
 {
   for (int i = 0; i < MEMORY_SIZE; i++)
     {
       if (i != 0 && i % 10 == 0)
         putchar ('\n');
 
-      cli_printCell (i);
+      printCell (i);
       putchar (' ');
     }
   putchar ('\n');

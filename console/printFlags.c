@@ -7,7 +7,7 @@
     putchar ('_');
 
 void
-cli_printFlags ()
+printFlags ()
 {
   int registers;
 

@@ -15,10 +15,9 @@ printBin (int value)
 }
 
 void
-cli_breakdownCommand (int encodedCommand)
+printDecodedCommand (int value)
 {
-  printf ("Hex: 0x%x;\nDec: %d;\nOct: %o;\nBin: ", encodedCommand,
-          encodedCommand, encodedCommand);
-  printBin (encodedCommand);
+  printf ("Hex: 0x%x;\nDec: %d;\nOct: %o;\nBin: ", value, value, value);
+  printBin (value);
   putchar ('\n');
 }

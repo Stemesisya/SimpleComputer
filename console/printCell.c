@@ -1,7 +1,7 @@
 #include <console/console.h>
 
 void
-cli_breakDownCell (int address)
+printCell (int address)
 {
   int value = 0;
 
@@ -11,7 +11,5 @@ cli_breakDownCell (int address)
       return;
     }
 
-  cli_printDecodedCommand (value);
-  putchar ('\n');
-  cli_breakdownCommand (value);
+  printCellValue (value);
 }
