@@ -19,7 +19,7 @@ updateTerm ()
       if (history[i][0] != -1)
         {
           sprintf (render, "%02x%c ", history[i][0],
-                   history[i][1] == -1 ? '>' : '<');
+                   history[i][1] == -1 ? '<' : '>');
           write (1, render, 7);
           if (history[i][1] != -1)
             printCellValue (history[i][1], NOTHING, NOTHING);
