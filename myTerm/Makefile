@@ -1,16 +1,18 @@
+SOURCES= ${shell find ./ -name '*.c'}
+OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
+
+LIB_NAME= libMyTerm.a
+
 COMPILE= gcc -I ../ -g -c
 LINK= ar rcs
-
-DEPENDENCIES= ${shell find ./ -name '*.c'}
-OBJECTS= $(DEPENDENCIES:.c=.o)
-LIB_NAME= libMyTerm.a
 
 all: ${LIB_NAME}
 
 ${LIB_NAME}: ${OBJECTS}
 	${LINK} ${LIB_NAME} $^
 
-%.o: %.c
+.build/%.o: %.c
+	@mkdir -p $(@D)
 	${COMPILE} $< -o $@
 
 clean:
