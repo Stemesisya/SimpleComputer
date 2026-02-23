@@ -26,7 +26,12 @@
 #define ACCUMULATOR_OFFSET_X (RAM_WIDTH + 1)
 #define FLAGS_OFFSET_X (ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH + 1)
 
+#define DETAILED_CELL_OFFSET_Y (RAM_HEIGHT + 1)
 #define INCOUNTER_OFFSET_Y 4
+
+#define TERM_OFFSET_X (RAM_WIDTH + 5)
+#define KEYBINDS_OFFSET_X (RAM_WIDTH + 16)
+#define LOW_OFFSET_Y (DETAILED_CELL_OFFSET_Y + 3)
 
 void printFlags ();
 
@@ -41,10 +46,19 @@ void printCounters ();
 
 void printBin (int value, int lengthInBits);
 
+void updateTerm ();
+void printTerm (int address, int input);
+
 void init_screen ();
 void init_memoryBlock ();
 void init_accumulatorBlock ();
 void init_flagsBlock ();
 void init_incounterBlock ();
+void init_commandBlock ();
+void printCommand ();
+void init_detailedCellBlock ();
+void init_cacheBlock ();
+void init_termBlock ();
+void init_keybindsBlock ();
 
 #endif
