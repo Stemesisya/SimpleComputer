@@ -23,4 +23,5 @@ run:
 	./${BIN_NAME}
 
 clean:
-	find -name '${BIN_NAME}' -delete
+	-@rm -r .bin/
+	-@rm -r .build/

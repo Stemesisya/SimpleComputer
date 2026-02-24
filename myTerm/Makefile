@@ -17,4 +17,5 @@ ${LIB_NAME}: ${OBJECTS}
 	${COMPILE} $< -o $@
 
 clean:
-	find -name '${LIB_NAME}' -delete
+	-@rm -r .bin/
+	-@rm -r .build/
