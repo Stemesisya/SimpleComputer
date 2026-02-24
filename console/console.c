@@ -7,6 +7,14 @@ main ()
 
   init_screen ();
 
+  if (!isatty (STDOUT_FILENO))
+    {
+      mt_setfgcolor (RED);
+      write (1, "Not opened in terminal.\n", 25);
+      mt_setdefaultcolor ();
+      return -1;
+    }
+
   int width = 0;
   int height = 0;
   mt_getscreensize (&height, &width);
@@ -24,14 +32,6 @@ main ()
     {
       mt_setfgcolor (RED);
       write (1, "Screen height is too small.\n", 28);
-      mt_setdefaultcolor ();
-      return -1;
-    }
-
-  if (!isatty (STDOUT_FILENO))
-    {
-      mt_setfgcolor (RED);
-      write (1, "Not opened in terminal.\n", 25);
       mt_setdefaultcolor ();
       return -1;
     }
