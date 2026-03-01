@@ -25,6 +25,9 @@ typedef enum colors
   BRIGHT_WHITE = 97
 } Colors;
 
+int mt_alt ();
+int mt_dealt ();
+
 int mt_clrscr ();
 int mt_delline ();
 

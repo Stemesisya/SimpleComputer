@@ -1,8 +1,8 @@
 #ifndef CONSOLE
 #define CONSOLE
 
+#include <include/myBigChars.h>
 #include <include/mySimpleComputer.h>
-#include <include/myTerm.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -21,17 +21,16 @@
 #define MINI_BLOCK_HEIGHT 3
 
 #define RAM_WIDTH 61
-#define RAM_HEIGHT 15
+#define RAM_HEIGHT 16
 
 #define ACCUMULATOR_OFFSET_X (RAM_WIDTH + 1)
 #define FLAGS_OFFSET_X (ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH + 1)
 
-#define DETAILED_CELL_OFFSET_Y (RAM_HEIGHT + 1)
 #define INCOUNTER_OFFSET_Y 4
 
 #define TERM_OFFSET_X (RAM_WIDTH + 5)
 #define KEYBINDS_OFFSET_X (RAM_WIDTH + 16)
-#define LOW_OFFSET_Y (DETAILED_CELL_OFFSET_Y + 3)
+#define LOW_OFFSET_Y (RAM_HEIGHT + 3)
 
 void printFlags ();
 

@@ -1,4 +1,4 @@
-SEQUENCE = mySimpleComputer myTerm console
+SEQUENCE = mySimpleComputer myTerm myBigChars console
 BRUH = 
 
 all: format

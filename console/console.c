@@ -5,8 +5,6 @@ int
 main ()
 {
 
-  init_screen ();
-
   if (!isatty (STDOUT_FILENO))
     {
       mt_setfgcolor (RED);
@@ -36,15 +34,7 @@ main ()
       return -1;
     }
 
-  init_memoryBlock ();
-  init_accumulatorBlock ();
-  init_flagsBlock ();
-  init_incounterBlock ();
-  init_commandBlock ();
-  init_detailedCellBlock ();
-  init_cacheBlock ();
-  init_termBlock ();
-  init_keybindsBlock ();
+  init_screen ();
 
   printMemory ();
   printCell (0, INVERSE, NOTHING);
