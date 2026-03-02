@@ -1,3 +1,4 @@
+ARGS=
 SEQUENCE = mySimpleComputer myTerm myBigChars console
 BRUH = 
 
@@ -18,4 +19,7 @@ clean:
 	done
 
 run: all
-	@$(MAKE) -C console run
+	./console/.bin/console.bin ${ARGS}
+
+run-font: all
+	./console/.bin/font.bin ${ARGS}

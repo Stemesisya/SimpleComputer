@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 unsigned char *bigchars = 0;
-int bigcharsLength = 0;
+int bigcharsLength = -1;
 
 unsigned char nullChar[8] = { 0U, 126U, 66U, 66U, 66U, 66U, 126U, 0U };
 
@@ -48,16 +48,25 @@ bc_freeSpace ()
 {
   free (bigchars);
   bigchars = 0;
-  bigcharsLength = 0;
+  bigcharsLength = -1;
 }
 
 unsigned char *
 bc_mallocSpace (int count)
 {
-  if (bigcharsLength != 0)
+  if (bigcharsLength != -1)
     return 0;
 
   bigchars = (unsigned char *)calloc (count * BIGCHAR_HEIGHT, sizeof (char));
   bigcharsLength = count;
   return bigchars;
+}
+
+int
+bc_trim (int count)
+{
+  if (count <= -1)
+    return -1;
+  bigcharsLength = count;
+  return 0;
 }

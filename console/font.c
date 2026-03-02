@@ -1,35 +1,40 @@
 #include <console/console.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef unsigned char *BigChar;
 
 int
-generateDefault ()
+main (int argc, char *argv[])
 {
-  bc_freeSpace ();
-  unsigned char *chars = bc_mallocSpace (18);
+  mt_clrscr ();
+  if (argc < 2)
+    {
+      write (1, "Usage: font <source> <destination>\n", 36);
+      mt_gotoXY (0, 2);
+      return -1;
+    }
 
+  unsigned char *chars = bc_mallocSpace (18);
   if (chars <= (unsigned char *)0)
     {
-      mt_gotoXY (0, COMMAND_LINE_Y);
       mt_setfgcolor (RED);
       write (1,
              "Unable to allocate memory for default font. Generation failed.",
              63);
       mt_setdefaultcolor ();
-      bc_freeSpace ();
+      mt_gotoXY (0, 2);
       return -1;
     }
 
-  FILE *file = fopen ("../default-font.txt", "r");
+  FILE *file = fopen (argv[1], "r");
 
   if (file == NULL)
     {
-      mt_gotoXY (0, COMMAND_LINE_Y);
       mt_setfgcolor (RED);
-      write (1, "No default-font.txt file found.", 32);
+      write (1, "Sources not found.", 19);
       mt_setdefaultcolor ();
-      bc_freeSpace ();
+      mt_gotoXY (0, 2);
       return -1;
     }
 
@@ -59,6 +64,25 @@ generateDefault ()
     }
 
   fclose (file);
+  bc_trim (chara);
+  int result = bc_save (argv[2]);
+  if (result != 0)
+    {
+      mt_setfgcolor (RED);
+      write (1, "Error happened during saving: ", 31);
+      char ok[3] = "";
+      sprintf (ok, "%d", result);
+      write (1, ok, 3);
+      mt_gotoXY (0, 2);
+
+      mt_setdefaultcolor ();
+    }
+  bc_freeSpace ();
+
+  write (1, "Font generated successfully (◕▿◕✿)\n", 44);
+  char buff[30] = "";
+  sprintf (buff, "Loaded %d glyphs.", chara);
+  write (1, buff, strlen (buff));
 
   return 0;
 }

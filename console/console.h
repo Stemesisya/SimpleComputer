@@ -32,7 +32,7 @@ void printCell (int address, Colors fg, Colors bg);
 void printMemory ();
 
 void printCellValue (int encodedCommand, Colors fg, Colors bg);
-void printDecodedCommand (int value);
+void printDecodedCommand ();
 
 void printAccumulator ();
 void printCounters ();
@@ -46,6 +46,9 @@ void init_screen ();
 
 void printCommand ();
 
-int generateDefault ();
+void printBigCell ();
 
+int getSelectedCell ();
+
+void setSelectedCell (int addr);
 #endif

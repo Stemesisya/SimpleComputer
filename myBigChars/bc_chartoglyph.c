@@ -1,5 +1,5 @@
 
-char *map = "0123456789ABCDEF+-";
+char *map = "0123456789abcdef+-";
 
 int
 bc_chartoglyph (char charych)
@@ -8,7 +8,7 @@ bc_chartoglyph (char charych)
   while (*i)
     {
       if (charych == *i)
-        return (int)(*i - *map);
+        return (int)(i - map);
       i++;
     }
   return -1;

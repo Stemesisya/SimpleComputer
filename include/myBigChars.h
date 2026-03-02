@@ -20,4 +20,11 @@ unsigned char *bc_mallocSpace (int count);
 
 int bc_chartoglyph (char chara);
 
+int bc_bigcharwrite (int fd, unsigned char *big, int count);
+int bc_bigcharread (int fd, unsigned char *big, int need_count, int *count);
+
+int bc_save (char *filename);
+int bc_load (char *filename);
+int bc_trim (int count);
+
 #endif

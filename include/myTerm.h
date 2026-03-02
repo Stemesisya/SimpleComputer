@@ -4,6 +4,7 @@
 typedef enum colors
 {
   NOTHING = -1,
+  RESET = 0,
   INVERSE = 7,
   BLACK = 30,
   RED = 31,
