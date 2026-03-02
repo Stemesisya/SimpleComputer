@@ -55,7 +55,7 @@ main (int argc, char *argv[])
       return -1;
     }
 
-  switch (bc_load (argc > 1 ? argv[1] : "default-font.bin"))
+  switch (bc_load (argc > 1 ? argv[1] : "font.bin"))
     {
     case -3:
       mt_setfgcolor (RED);
