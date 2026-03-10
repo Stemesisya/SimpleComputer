@@ -2,7 +2,6 @@
 #include <include/myReadKey.h>
 #include <include/mySimpleComputer.h>
 #include <include/myTerm.h>
-#include <string.h>
 #include <unistd.h>
 
 void
@@ -79,6 +78,7 @@ im_reset ()
   printMemory ();
   printAccumulator ();
   printCounters ();
+  printCommand ();
   setSelectedCell (getSelectedCell ());
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();

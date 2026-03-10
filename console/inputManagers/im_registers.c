@@ -124,6 +124,7 @@ im_writeIncounter ()
       mt_gotoXY (RAM_WIDTH + 3 + 14, INCOUNTER_OFFSET_Y + 1);
       printCellValue (value, BLACK, GREEN);
       printTerm (-3, 1);
+      printCommand ();
       return;
     }
 
