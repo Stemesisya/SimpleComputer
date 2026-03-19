@@ -75,6 +75,55 @@ testKeys ()
   exit (0);
 }
 
+void
+systemListener (int key, int options)
+{
+  switch (key)
+    {
+    case STATE_ACCUMULATOR_UPDATE:
+      printAccumulator ();
+      break;
+    case STATE_INCOUNTER_UPDATE:
+
+      printCounters ();
+      sc_incounterGet (&incounterCell);
+      incounterCellIsIdling = options;
+
+      moveIncounterCell ();
+
+      break;
+
+    case STATE_FLAG_UPDATE:
+      printFlags ();
+      break;
+    case STATE_CELL_UPDATE:
+      printCell (options, NOTHING, NOTHING);
+
+      if (options == selectedCell)
+        printSelectedCell ();
+      else if (options == incounterCell)
+        printIncounterCell ();
+
+      break;
+
+    case STATE_CPUINFO:
+      mt_gotoXY (0, COMMAND_LINE_Y);
+      write (1, "2 гига 2 ядра", 22);
+      break;
+
+    case STATE_RESET:
+      printMemory ();
+      printAccumulator ();
+      printCounters ();
+      printCommand ();
+      printSelectedCell ();
+      mt_gotoXY (0, COMMAND_LINE_Y);
+      mt_delline ();
+      break;
+    }
+  mt_gotoXY (0, COMMAND_LINE_Y);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -92,8 +141,8 @@ main (int argc, char *argv[])
 
   init_screen ();
 
-  for (int i = 0; i < MEMORY_SIZE; i++)
-    sc_memorySet (i, (int)(rand () % 32768));
+  // for (int i = 0; i < MEMORY_SIZE; i++)
+  //   sc_memorySet (i, (int)(rand () % 32768));
 
   printMemory ();
   printAccumulator ();
@@ -102,28 +151,41 @@ main (int argc, char *argv[])
   printCounters ();
   updateTerm ();
 
-  setSelectedCell (0);
+  moveSelectedCell (0);
+  sc_setStateListener (systemListener);
+  IG_init ();
 
   int notShouldExit = 1;
+  Keys key = K_0;
+
   while (notShouldExit)
     {
       mt_gotoXY (0, COMMAND_LINE_Y);
-      Keys key = K_0;
       rk_readkey (&key);
+
+      int isIdle;
+      sc_regGet (REG_TICK_IGNORE, &isIdle);
 
       switch (key)
         {
 
         case K_s:
-          im_memorySave ();
+          if (isIdle != 0)
+            im_memorySave ();
           break;
 
         case K_l:
-          im_memoryLoad ();
+          if (isIdle != 0)
+            im_memoryLoad ();
           break;
 
         case K_i:
           im_reset ();
+          break;
+
+        case K_r:
+          sc_regSet (REG_TICK_IGNORE, 0);
+          printFlags ();
           break;
 
         case K_esc:
@@ -147,15 +209,19 @@ main (int argc, char *argv[])
           break;
 
         case K_enter:
-          im_memoryWrite ();
+
+          if (isIdle != 0)
+            im_memoryWrite ();
           break;
 
         case K_F5:
-          im_accumulator ();
+          if (isIdle != 0)
+            im_accumulator ();
           break;
 
         case K_F6:
-          im_incounter ();
+          if (isIdle != 0)
+            im_incounter ();
 
         default:
           continue;

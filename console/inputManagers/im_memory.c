@@ -6,37 +6,19 @@
 
 #define STRINGIFY(x) #x
 
-int selectedCell = 0;
-
-int
-getSelectedCell ()
-{
-  return selectedCell;
-}
-
-void
-setSelectedCell (int addr)
-{
-  printCell (selectedCell, RESET, NOTHING);
-  selectedCell = addr;
-  printCell (selectedCell, INVERSE, NOTHING);
-  printBigCell ();
-  printDecodedCommand ();
-}
-
 void
 im_memoryLeft ()
 {
   if (selectedCell / 10 == RAM_ROWS && selectedCell % RAM_LAST_ROW_LEN == 0)
     {
-      setSelectedCell (selectedCell + RAM_LAST_ROW_LEN - 1);
+      moveSelectedCell (selectedCell + RAM_LAST_ROW_LEN - 1);
       return;
     }
 
   if (selectedCell % 10 == 0)
-    setSelectedCell (selectedCell + RAM_COLUMNS - 1);
+    moveSelectedCell (selectedCell + RAM_COLUMNS - 1);
   else
-    setSelectedCell (selectedCell - 1);
+    moveSelectedCell (selectedCell - 1);
 }
 
 void
@@ -45,14 +27,14 @@ im_memoryRight ()
   if (selectedCell / 10 == RAM_ROWS
       && selectedCell % RAM_LAST_ROW_LEN == RAM_LAST_ROW_LEN - 1)
     {
-      setSelectedCell (selectedCell - RAM_LAST_ROW_LEN + 1);
+      moveSelectedCell (selectedCell - RAM_LAST_ROW_LEN + 1);
       return;
     }
 
   if (selectedCell % 10 == 9)
-    setSelectedCell (selectedCell - RAM_COLUMNS + 1);
+    moveSelectedCell (selectedCell - RAM_COLUMNS + 1);
   else
-    setSelectedCell (selectedCell + 1);
+    moveSelectedCell (selectedCell + 1);
 }
 
 void
@@ -62,14 +44,14 @@ im_memoryUp ()
   if (selectedCell / RAM_COLUMNS == 0)
     {
       if (selectedCell % RAM_COLUMNS >= RAM_LAST_ROW_LEN)
-        setSelectedCell ((RAM_ROWS - 1) * RAM_COLUMNS
-                         + (selectedCell % RAM_COLUMNS));
+        moveSelectedCell ((RAM_ROWS - 1) * RAM_COLUMNS
+                          + (selectedCell % RAM_COLUMNS));
       else
-        setSelectedCell ((RAM_ROWS)*RAM_COLUMNS
-                         + (selectedCell % RAM_COLUMNS));
+        moveSelectedCell ((RAM_ROWS)*RAM_COLUMNS
+                          + (selectedCell % RAM_COLUMNS));
     }
   else
-    setSelectedCell (selectedCell - RAM_COLUMNS);
+    moveSelectedCell (selectedCell - RAM_COLUMNS);
 }
 
 void
@@ -78,16 +60,16 @@ im_memoryDown ()
   if (selectedCell % RAM_COLUMNS >= RAM_LAST_ROW_LEN
       && selectedCell / RAM_COLUMNS == RAM_ROWS - 1)
     {
-      setSelectedCell (selectedCell % RAM_COLUMNS);
+      moveSelectedCell (selectedCell % RAM_COLUMNS);
       return;
     }
 
   if (selectedCell / RAM_COLUMNS == RAM_ROWS)
     {
-      setSelectedCell (selectedCell % RAM_COLUMNS);
+      moveSelectedCell (selectedCell % RAM_COLUMNS);
     }
   else
-    setSelectedCell (selectedCell + RAM_COLUMNS);
+    moveSelectedCell (selectedCell + RAM_COLUMNS);
 }
 
 void
@@ -105,7 +87,7 @@ im_memoryWrite ()
   if (result == 0)
     {
       sc_memorySet (selectedCell, value);
-      setSelectedCell (selectedCell);
+      moveSelectedCell (selectedCell);
       printCell (selectedCell, BLACK, GREEN);
       printTerm (selectedCell, 1);
       return;
@@ -118,7 +100,7 @@ im_memoryWrite ()
   switch (result)
     {
     case 1:
-      setSelectedCell (selectedCell);
+      moveSelectedCell (selectedCell);
       break;
 
     case -20:

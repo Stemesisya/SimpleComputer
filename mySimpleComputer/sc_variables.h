@@ -14,4 +14,15 @@ void setAccumulator (int value);
 int getIncounter ();
 void setIncounter (int value);
 
+int getTickCounter ();
+void incrementTickCounter ();
+void resetTickCounter ();
+
+char getIdleIncounter ();
+void decrementIdleIncounter ();
+void incrementIdleIncounter (char value);
+
+int getIsJustIdleCompleted ();
+void setIsJustIdleCompleted (int value);
+
 #endif

@@ -2,6 +2,7 @@
 #include <include/myReadKey.h>
 #include <include/mySimpleComputer.h>
 #include <include/myTerm.h>
+#include <signal.h>
 #include <unistd.h>
 
 void
@@ -54,7 +55,8 @@ im_memoryLoad ()
       printMemory ();
       printAccumulator ();
       printCounters ();
-      setSelectedCell (getSelectedCell ());
+      printIncounterCell ();
+      printSelectedCell ();
       break;
     case -2:
       write (1, "Can't open file. Is path valid?", 32);
@@ -79,17 +81,7 @@ im_reset ()
       mt_delline ();
       return;
     }
-  sc_memoryInit ();
-  sc_regInit ();
-  sc_accumulatorInit ();
-  sc_incounterInit ();
-  printMemory ();
-  printAccumulator ();
-  printCounters ();
-  printCommand ();
-  setSelectedCell (getSelectedCell ());
-  mt_gotoXY (0, COMMAND_LINE_Y);
-  mt_delline ();
+  signal (SIGUSR1, ICR);
 }
 
 void

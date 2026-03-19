@@ -69,7 +69,7 @@ im_accumulator ()
 
   int notShouldExit = 1;
 
-  printCell (getSelectedCell (), RESET, NOTHING);
+  hideSelectedCell ();
   bc_box (ACCUMULATOR_OFFSET_X, 0, ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, 3,
           NOTHING, NOTHING, " Аккумулятор ", BLACK, RED);
   printAccumulator ();
@@ -100,7 +100,7 @@ im_accumulator ()
   bc_box (ACCUMULATOR_OFFSET_X, 0, ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, 3,
           NOTHING, NOTHING, " Аккумулятор ", RED, NOTHING);
   printAccumulator ();
-  printCell (getSelectedCell (), BLACK, WHITE);
+  printSelectedCell ();
 }
 
 void
@@ -121,11 +121,14 @@ im_writeIncounter ()
   if (result == 0)
     {
       sc_incounterSet (value);
+      incounterCell = value;
+      moveIncounterCell ();
       printCounters ();
       mt_gotoXY (RAM_WIDTH + 3 + 14, INCOUNTER_OFFSET_Y + 1);
       printCellValue (value, BLACK, GREEN);
       printTerm (-3, 1);
       printCommand ();
+
       return;
     }
 
@@ -169,7 +172,7 @@ im_incounter ()
 
   int notShouldExit = 1;
 
-  printCell (getSelectedCell (), RESET, NOTHING);
+  hideSelectedCell ();
   bc_box (ACCUMULATOR_OFFSET_X, INCOUNTER_OFFSET_Y,
           ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3,
           NOTHING, NOTHING, " Счетчик  команд ", BLACK, RED);
@@ -202,5 +205,5 @@ im_incounter ()
           ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3,
           NOTHING, NOTHING, " Счетчик  команд ", RED, NOTHING);
   printCounters ();
-  printCell (getSelectedCell (), BLACK, WHITE);
+  printSelectedCell ();
 }

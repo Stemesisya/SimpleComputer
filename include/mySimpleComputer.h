@@ -2,6 +2,17 @@
 #ifndef MY_SIMPLE_COMPUTER_HEADER
 #define MY_SIMPLE_COMPUTER_HEADER
 
+#define STATE_MEMORY_UPDATE 0
+#define STATE_ACCUMULATOR_UPDATE 1
+#define STATE_INCOUNTER_UPDATE 2
+#define STATE_CELL_UPDATE 3
+#define STATE_FLAG_UPDATE 4
+#define STATE_READ_REQUEST 5
+#define STATE_WRITE_REQUEST 6
+#define STATE_RESET 7
+#define STATE_CPUINFO 8
+#define STATE_TICK 9
+
 #define REG_ALL 0x1F
 // P
 #define REG_OVERFLOW 0x1
@@ -13,6 +24,9 @@
 #define REG_TICK_IGNORE 0x8
 // E
 #define REG_INVALID_COMMAND 0x10
+
+#define SIGTICK 1
+#define SIGRESET 2
 
 #define BITS_PER_COMMAND 7
 #define BITS_PER_OPERAND 7
@@ -53,5 +67,16 @@ int sc_memoryGet (int address, int *value);
 int sc_memorySet (int address, int value);
 int sc_memoryLoad (char *filename);
 int sc_memorySave (char *filename);
+
+void sc_reset ();
+
+int ALU (int command, int operand);
+void CU (int signo);
+void ICR (int signo);
+void IG_init ();
+
+void sc_setStateListener (void listener (int signal, int value));
+
+void sc_notifyListener (int signal, int value);
 
 #endif

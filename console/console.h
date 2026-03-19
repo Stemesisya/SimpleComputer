@@ -30,6 +30,10 @@
 
 #define COMMAND_LINE_Y (LOW_OFFSET_Y + 7)
 
+extern int selectedCell;
+extern int incounterCell;
+extern int incounterCellIsIdling;
+
 void printFlags ();
 
 void printCell (int address, Colors fg, Colors bg);
@@ -52,9 +56,11 @@ void printCommand ();
 
 void printBigCell ();
 
-int getSelectedCell ();
-
-void setSelectedCell (int addr);
+void printIncounterCell ();
+void moveIncounterCell ();
+void printSelectedCell ();
+void hideSelectedCell ();
+void moveSelectedCell (int to);
 
 void im_memoryLeft ();
 void im_memoryRight ();

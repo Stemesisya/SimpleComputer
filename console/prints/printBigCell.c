@@ -16,7 +16,7 @@ printBigCell ()
 
   int cell = 0;
 
-  if (sc_memoryGet (getSelectedCell (), &cell) != 0)
+  if (sc_memoryGet (selectedCell, &cell) != 0)
     return;
 
   if (sc_commandDecode (cell, &sign, &command, &operand) != 0)
@@ -34,7 +34,7 @@ printBigCell ()
 
   mt_gotoXY (ACCUMULATOR_OFFSET_X + 1, offsetY + 9);
   mt_setfgcolor (BLUE);
-  sprintf (buffer2, "Номер редактируемой ячейки: %03d", getSelectedCell ());
+  sprintf (buffer2, "Номер редактируемой ячейки: %03d", selectedCell);
   write (1, buffer2, 57);
   mt_setdefaultcolor ();
 }
