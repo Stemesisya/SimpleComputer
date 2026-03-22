@@ -1,14 +1,14 @@
 
-void (*stateListener) (int signal, int value) = 0;
+int (*stateListener) (int signal, int value) = 0;
 
 void
-sc_setStateListener (void listener (int signal, int value))
+sc_setStateListener (int listener (int signal, int value))
 {
   stateListener = listener;
 }
 
-void
+int
 sc_notifyListener (int signal, int value)
 {
-  stateListener (signal, value);
+  return stateListener (signal, value);
 }

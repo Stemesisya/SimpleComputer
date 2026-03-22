@@ -115,9 +115,6 @@ im_memoryWrite ()
     case -3:
       write (1, "Operand field overflow.", 24);
       break;
-    case -11:
-      write (1, "Command validator: command out of bounds.", 42);
-      break;
     default:
       write (1, "Unknown error", 14);
     }

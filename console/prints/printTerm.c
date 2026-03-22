@@ -51,33 +51,24 @@ updateTerm ()
     }
 }
 
-void
+int *
 printTerm (int address, int input)
 {
 
   if (input < 0 || input > 1)
-    return;
+    return NULL;
 
   int value = 0;
-  switch (address)
-    {
-    case -2:
-      sc_accumulatorGet (&value);
-      break;
-    case -3:
-      sc_incounterGet (&value);
-      break;
-    default:
-      sc_memoryGet (address, &value);
-      break;
-    }
+  sc_memoryGet (address, &value);
 
   history[head][0] = address;
   history[head][1] = ((value << 1) | input);
+  int *pointer = history[head] + 1;
   head++;
 
   if (head >= 5)
     head = 0;
 
   updateTerm ();
+  return pointer;
 }

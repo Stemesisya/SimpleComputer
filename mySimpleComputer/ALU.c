@@ -9,7 +9,7 @@ ALU (int command, int operand)
   if (getIsJustIdleCompleted () == 0)
     {
       incrementIdleIncounter (10);
-      return 0;
+      return 1;
     }
 
   if (sc_memoryGet (operand, &operandValue) != 0)
@@ -30,6 +30,7 @@ ALU (int command, int operand)
       if (operandValue == 0)
         {
           sc_regSet (REG_ZERO_DIV, REG_ZERO_DIV);
+          sc_notifyListener (STATE_FLAG_UPDATE, 0);
           return 1;
         }
       accumulatorValue /= operandValue;
@@ -44,6 +45,7 @@ ALU (int command, int operand)
   if (accumulatorValue > MAX_CELL_VALUE || accumulatorValue < 0)
     {
       sc_regSet (REG_OVERFLOW, REG_OVERFLOW);
+      sc_notifyListener (STATE_FLAG_UPDATE, 0);
       return 2;
     }
 

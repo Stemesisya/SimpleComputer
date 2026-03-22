@@ -48,7 +48,7 @@ void printCounters ();
 void printBin (int value, int lengthInBits);
 
 void updateTerm ();
-void printTerm (int address, int input);
+int *printTerm (int address, int input);
 
 void init_screen ();
 
@@ -75,4 +75,6 @@ void im_exit (int *exitSignal);
 void im_reset ();
 void im_memorySave ();
 void im_memoryLoad ();
+
+void p_determineCommand ();
 #endif

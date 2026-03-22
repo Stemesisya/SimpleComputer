@@ -1,28 +1,23 @@
 ARGS=
 
-SOURCES= ${shell find ./ -name '*.c' ! -name 'font.c'}
+SOURCES= ${shell find ./ -name '*.c'}
 OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
 LIBS= ${shell find ../ -name '*.a'}
 
-BIN_NAME= .bin/console.bin
-BIN_NAME2= .bin/font.bin
+BIN_NAME= .bin/sat.bin
 
-LIBS = ../myReadKey/.bin/libMyReadKey.a ../mySimpleComputer/.bin/libMySimpleComputer.a ../myBigChars/.bin/libMyBigChars.a ../myTerm/.bin/libMyTerm.a
+LIBS = ../mySimpleComputer/.bin/libMySimpleComputer.a
 
 
 COMPILE= gcc -g -c -Wall -Werror -Wextra -I ../
 LINK= gcc -g -Wall -Werror -Wextra -I ../ 
 
-all: ${BIN_NAME} ${BIN_NAME2} ${BIN_NAME3}
+all: ${BIN_NAME}
 
 ${BIN_NAME}: ${OBJECTS} ${LIBS}
 	@mkdir -p $(@D)
 	${LINK} $^ -o ${BIN_NAME}
-
-${BIN_NAME2}: font.c ${LIBS}
-	@mkdir -p $(@D)
-	${LINK} $^ -o ${BIN_NAME2}
 
 .build/%.o: %.c
 	@mkdir -p $(@D)

@@ -1,5 +1,5 @@
 ARGS=
-SEQUENCE = mySimpleComputer myTerm myBigChars myReadKey console
+SEQUENCE = mySimpleComputer myTerm myBigChars myReadKey console simpleassembler
 BRUH = 
 
 all: format
@@ -23,3 +23,6 @@ run: all
 
 run-font: all
 	./console/.bin/font.bin ${ARGS}
+
+run-trans: all
+	./simpleassembler/.bin/sat.bin ${ARGS}

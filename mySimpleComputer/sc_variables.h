@@ -14,7 +14,6 @@ void setAccumulator (int value);
 int getIncounter ();
 void setIncounter (int value);
 
-int getTickCounter ();
 void incrementTickCounter ();
 void resetTickCounter ();
 

@@ -72,16 +72,15 @@ im_reset ()
 {
   Keys key = K_0;
 
+  mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
-  write (1, "Вы действительно хотите сбросить машину? [y/n]\n", 83);
+  write (1, "Вы действительно хотите сбросить машину? [y/n]", 82);
+
   rk_readkey (&key);
+  mt_delline ();
   if (key != 'y' && key != 'Y')
-    {
-      mt_gotoXY (0, COMMAND_LINE_Y);
-      mt_delline ();
-      return;
-    }
-  signal (SIGUSR1, ICR);
+    return;
+  raise (SIGUSR1);
 }
 
 void

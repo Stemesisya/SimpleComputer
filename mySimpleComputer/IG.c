@@ -17,5 +17,6 @@ void
 IG_init ()
 {
   signal (SIGALRM, IG);
+  signal (SIGUSR1, IG);
   IG (SIGALRM);
 }

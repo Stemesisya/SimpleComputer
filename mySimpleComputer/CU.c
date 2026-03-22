@@ -31,7 +31,7 @@ CU (int signal)
   sc_notifyListener (STATE_INCOUNTER_UPDATE, 0);
 
   sc_memoryGet (currentInstruction, &tmpVar);
-  if (sc_commandValidate (tmpVar)
+  if (sc_commandValidate (tmpVar) != 0
       || sc_commandDecode (tmpVar, &sign, &command, &operand) != 0)
     {
       sc_regSet (REG_INVALID_COMMAND | REG_TICK_IGNORE,
@@ -48,9 +48,17 @@ CU (int signal)
       sc_notifyListener (STATE_CPUINFO, 0);
       break;
     case 10: // READ
-      sc_notifyListener (STATE_READ_REQUEST, operand);
+      sc_regSet (REG_TICK_IGNORE, REG_TICK_IGNORE);
+      sc_notifyListener (STATE_FLAG_UPDATE, 0);
+      if (sc_notifyListener (STATE_READ_REQUEST, operand) != 0)
+        return;
       break;
     case 11: // WRITE
+      if (getIsJustIdleCompleted () == 0)
+        {
+          incrementIdleIncounter (10);
+          return;
+        }
       sc_notifyListener (STATE_WRITE_REQUEST, operand);
       break;
     case 20: // LOAD
@@ -78,7 +86,8 @@ CU (int signal)
     case 32: // DIVIDE
     case 33: // MUL
     case 70: // RCCL
-      ALU (command, operand);
+      if (ALU (command, operand) == 1)
+        return;
       break;
     case 40: // JUMP
       currentInstruction = operand;

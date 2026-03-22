@@ -75,15 +75,39 @@ testKeys ()
   exit (0);
 }
 
-void
+int
 systemListener (int key, int options)
 {
+  static int tickLast = 0;
+  static int incLast = 0;
+  static int incThis = 0;
+
   switch (key)
     {
     case STATE_ACCUMULATOR_UPDATE:
       printAccumulator ();
       break;
     case STATE_INCOUNTER_UPDATE:
+      sc_incounterGet (&incThis);
+      if (incLast != incThis)
+        {
+          incLast = incThis;
+          tickLast = sc_tickCounter ();
+        }
+      mt_gotoXY (3, LOW_OFFSET_Y + 2);
+      char buffer[40] = "";
+      sprintf (buffer, "TickCounter: %d      ", sc_tickCounter ());
+      write (1, buffer, strlen (buffer));
+      mt_gotoXY (3, LOW_OFFSET_Y + 3);
+      sprintf (buffer, "Current instruction ticks: %d     ",
+               sc_tickCounter () - tickLast);
+      write (1, buffer, strlen (buffer));
+
+      mt_gotoXY (3, LOW_OFFSET_Y + 4);
+      write (1, "Current command: ", 18);
+      p_determineCommand ();
+      sprintf (buffer, " Idle: %d      ", options);
+      write (1, buffer, strlen (buffer));
 
       printCounters ();
       sc_incounterGet (&incounterCell);
@@ -120,8 +144,62 @@ systemListener (int key, int options)
       mt_gotoXY (0, COMMAND_LINE_Y);
       mt_delline ();
       break;
+
+    case STATE_READ_REQUEST:
+      int *termField = printTerm (options, 1);
+      int value = 0;
+      int result = 1;
+
+      while (result != 0)
+        {
+          mt_gotoXY (TERM_OFFSET_X + 5, LOW_OFFSET_Y + 5);
+          result = rk_readvalue (&value, 0);
+          *termField = ((value << 1) | 1);
+          mt_gotoXY (0, COMMAND_LINE_Y);
+          mt_delline ();
+          mt_setfgcolor (RED);
+          switch (result)
+            {
+            case 0:
+              mt_setdefaultcolor ();
+              sc_memorySet (options, value);
+              sc_regSet (REG_TICK_IGNORE, 0);
+              printFlags ();
+              systemListener (STATE_CELL_UPDATE, options);
+              break;
+            case 1:
+              mt_setdefaultcolor ();
+              mt_gotoXY (TERM_OFFSET_X + 5, LOW_OFFSET_Y + 5);
+              write (1, "cncld", 6);
+              mt_gotoXY (0, COMMAND_LINE_Y);
+              return -1;
+
+            case -20:
+              write (1, "Illegal cell format and/or illegal symbols.", 44);
+              break;
+            case -10:
+              write (1, "Illegal sign. Allowed only '+' or '-'.", 39);
+              break;
+            case -2:
+              write (1, "Command field overflow.", 24);
+              break;
+            case -3:
+              write (1, "Operand field overflow.", 24);
+              break;
+            default:
+              write (1, "Unknown error", 14);
+            }
+          mt_setdefaultcolor ();
+        }
+      break;
+
+    case STATE_WRITE_REQUEST:
+      printTerm (options, 0);
+      break;
     }
+
   mt_gotoXY (0, COMMAND_LINE_Y);
+  return 0;
 }
 
 int

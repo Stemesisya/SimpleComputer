@@ -36,6 +36,19 @@
 
 #define MEMORY_SIZE 128
 #define COMMANDS_COUNT 77
+#define COMMANDS_COUNT_TRUNCED 16
+
+#define OPNONE 0
+#define OPADDR 1
+
+typedef struct _simpleassembly_command
+{
+  char command[8];
+  char code;
+  char operandType;
+} Command;
+
+Command *getCommands ();
 
 // Аккумулятор
 
@@ -54,6 +67,8 @@ int sc_commandValidate (int command);
 int sc_incounterInit ();
 int sc_incounterGet (int *value);
 int sc_incounterSet (int value);
+
+int sc_tickCounter ();
 
 // Регистры флагов
 int sc_regInit ();
@@ -75,8 +90,8 @@ void CU (int signo);
 void ICR (int signo);
 void IG_init ();
 
-void sc_setStateListener (void listener (int signal, int value));
+void sc_setStateListener (int listener (int signal, int value));
 
-void sc_notifyListener (int signal, int value);
+int sc_notifyListener (int signal, int value);
 
 #endif

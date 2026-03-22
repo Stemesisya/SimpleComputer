@@ -1,0 +1,12 @@
+01        ADD                            33            f
+
+03        ADD                            33            
+03 HALT 11
+05 = +0000
+0y = +0000
+07 = y0000
+08 = -7f7f
+09 = -8f8f
+05 RUN 99
+hhh HALT fuc
+06 haaaaaaaaaaaaaaaaaaaaaalt 99
