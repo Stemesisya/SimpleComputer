@@ -2,11 +2,12 @@
 #include "include/myTerm.h"
 #include <console/console.h>
 #include <include/myReadKey.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
+
+int selectedCell = 0;
+int incounterCell = 0;
+int incounterCellIsIdling = 0;
 
 void
 loadFont (char *font)
@@ -63,28 +64,47 @@ checkTerminalSize ()
     }
 }
 
-void
-testKeys ()
+int
+systemListener (int key, int options)
 {
-  Keys key = K_0;
-  while (1)
+  switch (key)
     {
-      rk_readkey (&key);
-      printf ("You typed: %d | '%c'\n", key, key);
+    case STATE_ACCUMULATOR_UPDATE:
+      printAccumulator ();
+      break;
+    case STATE_INCOUNTER_UPDATE:
+      l_incounterUpdate (options);
+      break;
+    case STATE_FLAG_UPDATE:
+      printFlags ();
+      break;
+    case STATE_CELL_UPDATE:
+      l_cellUpdate (options);
+      break;
+    case STATE_CPUINFO:
+      mt_gotoXY (0, COMMAND_LINE_Y);
+      write (1, "2 гига 2 ядра", 22);
+      break;
+    case STATE_RESET:
+      l_reset ();
+      mt_gotoXY (0, COMMAND_LINE_Y);
+      break;
+    case STATE_READ_REQUEST:;
+      if (l_readRequest (options) != 0)
+        return -1;
+      break;
+    case STATE_WRITE_REQUEST:
+      printTerm (options, 0);
+      break;
     }
-  exit (0);
+
+  mt_gotoXY (0, COMMAND_LINE_Y);
+  return 0;
 }
 
 int
 main (int argc, char *argv[])
 {
-  if (argc > 1 && strcmp (argv[1], "--test-keys") == 0)
-    {
-      testKeys ();
-    }
-
-  srand (time (NULL));
-
   checkTty ();
   checkTerminalSize ();
   loadFont (argc > 1 ? argv[1] : "font.bin");
@@ -92,38 +112,50 @@ main (int argc, char *argv[])
 
   init_screen ();
 
-  for (int i = 0; i < MEMORY_SIZE; i++)
-    sc_memorySet (i, (int)(rand () % 32768));
+  l_reset ();
 
-  printMemory ();
-  printAccumulator ();
-  printFlags ();
-  printCommand ();
-  printCounters ();
-  updateTerm ();
-
-  setSelectedCell (0);
+  moveSelectedCell (0);
+  sc_setStateListener (systemListener);
+  IG_init ();
 
   int notShouldExit = 1;
+  Keys key = K_0;
+  int isRunningVar;
+
   while (notShouldExit)
     {
+
       mt_gotoXY (0, COMMAND_LINE_Y);
-      Keys key = K_0;
       rk_readkey (&key);
+
+      isRunningVar = sc_isRunning ();
 
       switch (key)
         {
 
         case K_s:
-          im_memorySave ();
+          if (isRunningVar == 0)
+            im_memorySave ();
           break;
 
         case K_l:
-          im_memoryLoad ();
+          if (isRunningVar == 0)
+            im_memoryLoad ();
+          break;
+
+        case K_t:
+          if (isRunningVar == 0)
+            ICR_tick ();
           break;
 
         case K_i:
-          im_reset ();
+          if (isRunningVar == 0)
+            im_reset ();
+          break;
+
+        case K_r:
+          if (isRunningVar == 0)
+            sc_regSet (REG_TICK_IGNORE, 0);
           break;
 
         case K_esc:
@@ -147,22 +179,25 @@ main (int argc, char *argv[])
           break;
 
         case K_enter:
-          im_memoryWrite ();
+          if (isRunningVar == 0)
+            im_editCell ();
           break;
 
         case K_F5:
-          im_accumulator ();
+          if (isRunningVar == 0)
+            im_accumulator ();
           break;
 
         case K_F6:
-          im_incounter ();
+          if (isRunningVar == 0)
+            im_incounter ();
 
         default:
           continue;
         }
     }
-  mt_gotoXY (0, COMMAND_LINE_Y);
 
+  mt_gotoXY (0, COMMAND_LINE_Y);
   bc_freeSpace ();
 
   return 0;

@@ -1,4 +1,4 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 #include <stdio.h>
 
 int
@@ -21,11 +21,11 @@ sc_memoryLoad (char *filename)
   if (count < MEMORY_SIZE)
     return -3;
 
-  int *memory = getMemory ();
   for (int i = 0; i < MEMORY_SIZE; i++)
-    {
-      memory[i] = buffer[i];
-    }
+    memory[i] = buffer[i];
+
+  sc_notifyListener (STATE_MEMORY_UPDATE, 0);
+  sc_notifyListener (STATE_INCOUNTER_UPDATE, 0);
 
   return 0;
 }

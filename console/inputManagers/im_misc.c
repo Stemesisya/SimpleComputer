@@ -1,8 +1,7 @@
 #include <console/console.h>
 #include <include/myReadKey.h>
-#include <include/mySimpleComputer.h>
 #include <include/myTerm.h>
-#include <unistd.h>
+#include <signal.h>
 
 void
 im_memorySave ()
@@ -51,10 +50,7 @@ im_memoryLoad ()
     {
     case 0:
       write (1, "Loaded successfully.", 21);
-      printMemory ();
-      printAccumulator ();
-      printCounters ();
-      setSelectedCell (getSelectedCell ());
+      l_reset ();
       break;
     case -2:
       write (1, "Can't open file. Is path valid?", 32);
@@ -70,26 +66,15 @@ im_reset ()
 {
   Keys key = K_0;
 
-  mt_delline ();
-  write (1, "Вы действительно хотите сбросить машину? [y/n]\n", 83);
-  rk_readkey (&key);
-  if (key != 'y' && key != 'Y')
-    {
-      mt_gotoXY (0, COMMAND_LINE_Y);
-      mt_delline ();
-      return;
-    }
-  sc_memoryInit ();
-  sc_regInit ();
-  sc_accumulatorInit ();
-  sc_incounterInit ();
-  printMemory ();
-  printAccumulator ();
-  printCounters ();
-  printCommand ();
-  setSelectedCell (getSelectedCell ());
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
+  write (1, "Вы действительно хотите сбросить машину? [y/n]", 82);
+
+  rk_readkey (&key);
+  mt_delline ();
+  if (key != 'y' && key != 'Y')
+    return;
+  raise (SIGUSR1);
 }
 
 void

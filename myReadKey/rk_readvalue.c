@@ -30,12 +30,7 @@ rk_readvalue (int *value, int timeout)
   if (encodeResult != 0)
     return encodeResult;
 
-  if (sc_commandValidate (result) != 0)
-    {
-      return -11;
-    }
   *value = result;
 
-  rk_mytermrestore ();
   return 0;
 }

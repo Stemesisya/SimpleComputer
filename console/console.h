@@ -30,6 +30,10 @@
 
 #define COMMAND_LINE_Y (LOW_OFFSET_Y + 7)
 
+extern int selectedCell;
+extern int incounterCell;
+extern int incounterCellIsIdling;
+
 void printFlags ();
 
 void printCell (int address, Colors fg, Colors bg);
@@ -44,23 +48,31 @@ void printCounters ();
 void printBin (int value, int lengthInBits);
 
 void updateTerm ();
-void printTerm (int address, int input);
+int *printTerm (int address, int input);
 
 void init_screen ();
+void init_drawIncounterBox (Colors headerColor, Colors backgroundColor);
+void init_drawAccumulatorBox (Colors headerColor, Colors backgroundColor);
 
 void printCommand ();
 
 void printBigCell ();
 
-int getSelectedCell ();
+void printIncounterCell ();
+void moveIncounterCell ();
+void printSelectedCell ();
+void hideSelectedCell ();
+void moveSelectedCell (int to);
 
-void setSelectedCell (int addr);
+void invalidCellExplain (int resultCode);
+
+// Input managers
 
 void im_memoryLeft ();
 void im_memoryRight ();
 void im_memoryUp ();
 void im_memoryDown ();
-void im_memoryWrite ();
+void im_editCell ();
 
 void im_accumulator ();
 void im_incounter ();
@@ -69,4 +81,12 @@ void im_exit (int *exitSignal);
 void im_reset ();
 void im_memorySave ();
 void im_memoryLoad ();
+
+// Listeners
+
+int l_readRequest (int destAddress);
+void l_cellUpdate (int cell);
+void l_incounterUpdate (int idleCounter);
+void l_reset ();
+
 #endif

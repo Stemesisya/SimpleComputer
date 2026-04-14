@@ -1,8 +1,7 @@
 #include <console/console.h>
+#include <include/utils.h>
 
 static char buffer[6];
-static char buffer2[57];
-static char *render;
 
 void
 printBigCell ()
@@ -16,7 +15,7 @@ printBigCell ()
 
   int cell = 0;
 
-  if (sc_memoryGet (getSelectedCell (), &cell) != 0)
+  if (sc_memoryGet (selectedCell, &cell) != 0)
     return;
 
   if (sc_commandDecode (cell, &sign, &command, &operand) != 0)
@@ -24,17 +23,15 @@ printBigCell ()
 
   sprintf (buffer, "%c%02x%02x", sign == 1 ? '-' : '+', command, operand);
 
-  render = buffer;
   for (int i = 0; i < 5; i++)
     {
-      bc_printbigchar (bc_chartoglyph (render[i]), offsetX, offsetY, NOTHING,
+      bc_printbigchar (bc_chartoglyph (buffer[i]), offsetX, offsetY, NOTHING,
                        NOTHING);
       offsetX += 8;
     }
 
   mt_gotoXY (ACCUMULATOR_OFFSET_X + 1, offsetY + 9);
   mt_setfgcolor (BLUE);
-  sprintf (buffer2, "Номер редактируемой ячейки: %03d", getSelectedCell ());
-  write (1, buffer2, 57);
+  writef ("Номер редактируемой ячейки: %03d", selectedCell);
   mt_setdefaultcolor ();
 }

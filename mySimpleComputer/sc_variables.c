@@ -1,49 +1,50 @@
 #include "sc_variables.h"
+#include "include/mySimpleComputer.h"
 
-static int memory[MEMORY_SIZE];
+Command commands[] = { { "NOP", 0, OPNONE },     { "CPUINFO", 1, OPNONE },
+                       { "READ", 10, OPADDR },   { "WRITE", 11, OPADDR },
+                       { "LOAD", 20, OPADDR },   { "STORE", 21, OPADDR },
+                       { "ADD", 30, OPADDR },    { "SUM", 31, OPADDR },
+                       { "DIVIDE", 32, OPADDR }, { "MUL", 33, OPADDR },
+                       { "JUMP", 40, OPADDR },   { "JNEG", 41, OPADDR },
+                       { "JZ", 42, OPADDR },     { "HALT", 43, OPNONE },
+                       { "RCCR", 70, OPADDR },   { "MOVA", 71, OPADDR } };
 
-static int flagRegister = REG_TICK_IGNORE;
-static int accumulator = 0;
-static int incounter = 0;
+int simulatonDelaySecs = 0;
+int simulatonDelayUsecs = 500000;
+int memory[MEMORY_SIZE];
+int flagRegister = REG_TICK_IGNORE;
+int accumulator = 0;
+int incounter = 0;
+int tickCounter = 0;
+char idleIncounter = 0;
+int isIdleJustCompleted = 0;
+int isRunningVar = 0;
 
-int *
-getMemory ()
+int tickCommandStage = 0;
+int commandStage = 0;
+
+int
+sc_tickCounter ()
 {
-  return memory;
+  return tickCounter;
 }
 
 int
-getFlagRegister ()
+sc_isRunning ()
 {
-  return flagRegister;
+  return isRunningVar;
+}
+
+Command *
+sc_getCommands ()
+{
+  return commands;
 }
 
 void
-setFlagRegister (int value)
+sc_setSimulationDelay (int sec, int usec)
 {
-  flagRegister = value;
-}
-
-int
-getAccumulator ()
-{
-  return accumulator;
-}
-
-void
-setAccumulator (int value)
-{
-  accumulator = value;
-}
-
-int
-getIncounter ()
-{
-  return incounter;
-}
-
-void
-setIncounter (int value)
-{
-  incounter = value;
+  simulatonDelaySecs = sec;
+  simulatonDelayUsecs = usec;
 }
