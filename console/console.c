@@ -116,6 +116,7 @@ main (int argc, char *argv[])
 
   moveSelectedCell (0);
   sc_setStateListener (systemListener);
+  sc_setSimulationDelay (0, 25000);
   IG_init ();
 
   int notShouldExit = 1;

@@ -1,0 +1,19 @@
+00 READ 7F
+01 LOAD 7E
+02 MOVA 7F
+03 LOAD 7D
+04 JZ 0C
+05 LOAD 7C
+06 MUL 7D
+07 STORE 7C ; // result *= i
+08 LOAD 7D
+09 SUB 7B
+0A STORE 7D ; // i--;
+0B JUMP 03
+0C WRITE 7C
+0D HALT 00
+7B = +0001 ; 1
+7C = +0001 ; result
+7D = +0000 ; downTo i
+7E = +007D ; 7D pointer 
+7F = +0000 ; max value

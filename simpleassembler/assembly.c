@@ -72,11 +72,6 @@ translate (int line, char *lineNumber, char *command, char *operand)
       printf ("%3d: Unexpected symbols in lineId\n", line);
       return -1;
     }
-  if (line - 1 != linenum)
-    {
-      printf ("%3d: Invalid lineId\n", line);
-      return -1;
-    }
 
   int encoded;
   if (determineCommand (line, command, operand, &encoded) != 0)
@@ -84,7 +79,7 @@ translate (int line, char *lineNumber, char *command, char *operand)
 
   int sign, cmd, opr;
   sc_commandDecode (encoded, &sign, &cmd, &opr);
-  sc_memorySet (line - 1, encoded);
+  sc_memorySet (linenum, encoded);
   printf ("%3d: %s, %s, %s  [%c%02x%02x]\n", line, lineNumber, command,
           operand, sign == 1 ? '-' : '+', cmd, opr);
   return 0;
@@ -226,7 +221,10 @@ main (int argc, char *argv[])
 
         case 3:
           if (i == 0 && c == ';')
-            stage = -10;
+            {
+              stage = -10;
+              break;
+            }
           fatal ("%3d:%d: Unexpected symbol '%c'\n", line, pos, c);
           break;
         }
