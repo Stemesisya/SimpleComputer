@@ -54,7 +54,7 @@ typedef struct _simpleassembly_command
   char operandType;
 } Command;
 
-Command *sc_getCommands ();
+extern Command sc_commands[];
 
 // Аккумулятор
 

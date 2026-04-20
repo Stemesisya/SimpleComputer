@@ -1,7 +1,4 @@
-#include "include/mySimpleComputer.h"
-#include "sb_variables.h"
-#include <ctype.h>
-#include <stdlib.h>
+#include "../sb_variables.h"
 
 typedef struct STACK_NODE
 {
@@ -18,7 +15,7 @@ typedef struct STACK_NODE
 #define stack_peek() stack[stackSize - 1]
 
 int
-sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][4], int line)
+sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line)
 {
 
   int stackSize = 0;
@@ -28,13 +25,15 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][4], int line)
   int pi = 0;
   for (; postfixExpression[pi][0] != '\0' && pi < 128; pi++)
     {
-      if (isdigit (postfixExpression[pi][0]))
+      if (sb_isdigit (postfixExpression[pi]))
         {
+          // printf ("append '%s' (int)\n", postfixExpression[pi]);
           stack_push (postfixExpression[pi], 0);
           continue;
         }
       if (isalpha (postfixExpression[pi][0]))
         {
+          // printf ("append '%s' (var)\n", postfixExpression[pi]);
           stack_push (postfixExpression[pi], 1);
           continue;
         }
@@ -84,12 +83,23 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][4], int line)
           result = a * b;
           break;
         case '/':
+          if (b == 0)
+            {
+              printf (
+                  "%d: Control point found division by 0 during evaluation.\n",
+                  line);
+              return -1;
+            }
           result = a / b;
           break;
+        default:
+          printf ("%d Invalid operator '%c'\n", line,
+                  postfixExpression[pi][0]);
+          return -1;
         }
       printf ("%d %c %d = %d\n", a, postfixExpression[pi][0], b, result);
 
-      if (result > 128)
+      if (result > MAX_ABSOLUTE_VALUE || result < -(MAX_ABSOLUTE_VALUE + 1))
         {
           printf ("%d: Control point reached variable overflow during "
                   "evaluation.\n",
@@ -102,7 +112,7 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][4], int line)
     }
 
   for (int i = 0; i < stackSize; i++)
-    for (int j = 0; j < 4; j++)
+    for (int j = 0; j < 7; j++)
       postfixExpression[i][j] = stack[i].chara[j];
 
   if (stackSize != MEMORY_SIZE - 1)

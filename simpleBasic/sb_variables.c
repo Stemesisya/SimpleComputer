@@ -8,7 +8,15 @@ BasicCommandType basicCommandTypes[]
 BasicCommand basicProgram[MEMORY_SIZE] = { 0 };
 AssemblyCommand assemblyProgram[MEMORY_SIZE] = { 0 };
 
+int bp = 0;
+int ap = 0;
+
 Command assignmentCommand = { "=", -1, OPADDR };
 
+char variableComments[MEMORY_SIZE][7] = { 0 };
+
 BasicVariable definedVariables[26] = { 0 };
-char variablesPoolSize = 0;
+int variablesPoolSize = 0;
+
+BasicConstant definedConstants[MEMORY_SIZE] = { 0 };
+int constantsPoolSize = 0;

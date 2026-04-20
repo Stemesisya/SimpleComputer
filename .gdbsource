@@ -1,0 +1,18 @@
+b sb_expressionToAssembly
+run z_basicPrograms/expr_simple.bas ok
+n
+n
+n
+n
+n
+n
+n
+n
+display expr[i]
+display expr[i+1]
+display expr[i+2]
+display loadedOperand
+display (stackSize > 0)? stack[0] : "" 
+display (stackSize > 1)? stack[1] : "" 
+display (stackSize > 2)? stack[2] : ""
+display availableTempVarsCount

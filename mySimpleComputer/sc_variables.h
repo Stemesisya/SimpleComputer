@@ -7,7 +7,6 @@
 #define checkAddressOverflow(address) (address < 0 || MEMORY_SIZE <= address)
 #define checkCellOverflow(value) (value < 0 || MAX_CELL_VALUE < value)
 
-extern Command commands[];
 extern int simulatonDelaySecs;
 extern int simulatonDelayUsecs;
 extern int memory[MEMORY_SIZE];

@@ -1,11 +1,9 @@
-#include "include/mySimpleComputer.h"
-#include "sb_variables.h"
-#include <ctype.h>
+#include "../sb_variables.h"
 
 #define fexpr_append(chara)                                                   \
   if (fexprI >= MEMORY_SIZE)                                                  \
     {                                                                         \
-      printf ("%d: Expression limit achieved\n", *bp);                        \
+      printf ("%d: Expression limit achieved\n", bp);                         \
       return -1;                                                              \
     }                                                                         \
   fexpr[fexprI][0] = chara;                                                   \
@@ -14,7 +12,7 @@
 #define stack_push(chara)                                                     \
   if (stackSize >= MEMORY_SIZE)                                               \
     {                                                                         \
-      printf ("%d: Expression limit achieved\n", *bp);                        \
+      printf ("%d: Expression limit achieved\n", bp);                         \
       return -1;                                                              \
     }                                                                         \
   stack[stackSize++] = chara;
@@ -42,24 +40,25 @@ int
 calculatePriority (char a)
 {
   for (int i = 0; i < 6; i++)
-    {
-      if (a == operators[i].chara)
-        return operators[i].f;
-    }
+    if (a == operators[i].chara)
+      return operators[i].f;
   return -1;
 }
 
 int
-sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
+sb_evaluateExpression (char *expression)
 {
+
+  if (expression[0] == '\0')
+    {
+      printf ("%d: Expected expression. Got nothing.\n", bp);
+      return -1;
+    }
 
   int fexprI = 0;
   int stackSize = 0;
 
-  if (var != NULL && ap != NULL)
-    fexprI = 0;
-
-  char fexpr[MEMORY_SIZE][4] = { 0 };
+  char fexpr[MEMORY_SIZE][7] = { 0 };
   char stack[MEMORY_SIZE] = "";
 
   for (int i = 0; i < MEMORY_SIZE; i++)
@@ -71,7 +70,7 @@ sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
   for (; *expression != '\0'; expression++)
     {
 
-      //   printf ("> %s\n", expression);
+      printf ("> %s\n", expression);
 
       //   printf ("> expr : ");
       //   for (int i = 0; i < fexprI; i++)
@@ -87,28 +86,23 @@ sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
 
       if (isalpha (*expression))
         {
-          if (sc_getVariable (expression, 0, *bp) == NULL)
+          if (sb_getVariable (expression) == NULL)
             return -1;
           fexpr_append (*expression);
-          //   printf ("append %c (var)\n", *expression);
+          printf ("append %c (var)\n", *expression);
           continue;
         }
-      int di = 0;
-      if (isdigit (*expression))
+      if (sb_isdigit (expression))
         {
-          while (isdigit (*expression))
-            {
-              if (di >= 3)
-                {
-                  printf ("%d: Number overflow\n", *bp);
-                  return -1;
-                }
-              fexpr[fexprI][di++] = *expression;
-              expression++;
-            }
-          expression--;
+          int size = sb_checkForConstant (expression, NULL);
+          if (size == -1)
+            return -1;
+
+          strncpy (fexpr[fexprI], expression, size);
+          fexpr[fexprI][size] = '\0';
           fexprI++;
-          //   printf ("append %s (const)\n", fexpr[fexprI - 1]);
+          expression += size - 1;
+          printf ("append %s (const)\n", fexpr[fexprI - 1]);
           continue;
         }
 
@@ -132,7 +126,7 @@ sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
 
       do
         {
-          stack_pop (popitem, "%d: Not found matching closing bracket\n", *bp);
+          stack_pop (popitem, "%d: Not found matching closing bracket\n", bp);
           if (popitem == '(')
             break;
           fexpr_append (popitem);
@@ -150,7 +144,7 @@ sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
 
       if (popitem == '(')
         {
-          printf ("%d: Not found matching closing bracket\n", *bp);
+          printf ("%d: Not found matching closing bracket\n", bp);
           return -1;
         }
     }
@@ -161,7 +155,7 @@ sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
     printf (" %s", fexpr[pi++]);
   putchar ('\n');
 
-  if (sb_optimizeExpression (fexpr, *bp) != 0)
+  if (sb_optimizeExpression (fexpr, bp) != 0)
     return -1;
 
   printf ("\tOptimized Expression: ");
@@ -170,8 +164,5 @@ sb_evaluateExpression (int *bp, int *ap, BasicVariable *var, char *expression)
     printf (" %s", fexpr[pi++]);
   putchar ('\n');
 
-    
-
-    return sb_expressionToAssembly(fexpr, *bp);
-
+  return sb_expressionToAssembly (fexpr);
 }

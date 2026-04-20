@@ -64,7 +64,6 @@ main (int argc, char *argv[])
       return -2;
     }
 
-  Command *commands = sc_getCommands ();
   for (int i = 0; i < MEMORY_SIZE; i++)
     {
       basicProgram[i].command = &basicCommandTypes[7];
@@ -72,9 +71,8 @@ main (int argc, char *argv[])
       basicProgram[i].operand[0] = '\0';
       assemblyProgram[i].linkedBasicLine = -1;
       assemblyProgram[i].operand = 0;
-      assemblyProgram[i].command = &commands[0];
+      assemblyProgram[i].command = sc_commands;
       assemblyProgram[i].comment = NULL;
-      assemblyProgram[i].isVariable = 0;
       assemblyProgram[i].needsFurtherInvestigation = 0;
     }
 
@@ -195,7 +193,7 @@ main (int argc, char *argv[])
   if (fatal)
     return -1;
 
-  if (sb_translate (line) != 0)
+  if (sb_toassembly (line) != 0)
     return -2;
 
   // sb_saveAssembly(argv[2]);

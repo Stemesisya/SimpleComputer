@@ -1,14 +1,14 @@
 #include "sc_variables.h"
 #include "include/mySimpleComputer.h"
 
-Command commands[] = { { "NOP", 0, OPNONE },     { "CPUINFO", 1, OPNONE },
-                       { "READ", 10, OPADDR },   { "WRITE", 11, OPADDR },
-                       { "LOAD", 20, OPADDR },   { "STORE", 21, OPADDR },
-                       { "ADD", 30, OPADDR },    { "SUB", 31, OPADDR },
-                       { "DIVIDE", 32, OPADDR }, { "MUL", 33, OPADDR },
-                       { "JUMP", 40, OPADDR },   { "JNEG", 41, OPADDR },
-                       { "JZ", 42, OPADDR },     { "HALT", 43, OPNONE },
-                       { "RCCR", 70, OPADDR },   { "MOVA", 71, OPADDR } };
+Command sc_commands[] = { { "NOP", 0, OPNONE },     { "CPUINFO", 1, OPNONE },
+                          { "READ", 10, OPADDR },   { "WRITE", 11, OPADDR },
+                          { "LOAD", 20, OPADDR },   { "STORE", 21, OPADDR },
+                          { "ADD", 30, OPADDR },    { "SUB", 31, OPADDR },
+                          { "DIVIDE", 32, OPADDR }, { "MUL", 33, OPADDR },
+                          { "JUMP", 40, OPADDR },   { "JNEG", 41, OPADDR },
+                          { "JZ", 42, OPADDR },     { "HALT", 43, OPNONE },
+                          { "RCCR", 70, OPADDR },   { "MOVA", 71, OPADDR } };
 
 int simulatonDelaySecs = 0;
 int simulatonDelayUsecs = 500000;
@@ -34,12 +34,6 @@ int
 sc_isRunning ()
 {
   return isRunningVar;
-}
-
-Command *
-sc_getCommands ()
-{
-  return commands;
 }
 
 void
