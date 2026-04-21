@@ -8,7 +8,6 @@ getCurrentCommandName ()
 {
   int s, o;
   int command;
-  Command *commands = sc_getCommands ();
   sc_incounterGet (&command);
   sc_memoryGet (command, &command);
   sc_commandDecode (command, &s, &command, &o);
@@ -17,9 +16,9 @@ getCurrentCommandName ()
   write (1, cmdI, 6);
   for (int i = 0; i < COMMANDS_COUNT_TRUNCED; i++)
     {
-      if (command == commands[i].code)
+      if (command == sc_commands[i].code)
         {
-          return commands[i].command;
+          return sc_commands[i].command;
         }
     }
   return "<Command not found>";

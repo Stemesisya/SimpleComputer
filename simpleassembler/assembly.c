@@ -42,14 +42,13 @@ determineCommand (int line, char *command, char *operand, int *encoded)
       return 0;
     }
 
-  Command *commands = sc_getCommands ();
   for (int i = 0; i < COMMANDS_COUNT_TRUNCED; i++)
     {
-      if (strcmp (command, commands[i].command) != 0)
+      if (strcmp (command, sc_commands[i].command) != 0)
         continue;
 
-      command_i = commands[i].code;
-      if (commands[i].operandType == OPNONE)
+      command_i = sc_commands[i].code;
+      if (sc_commands[i].operandType == OPNONE)
         {
           operand_i = 0;
         }
@@ -131,8 +130,8 @@ main (int argc, char *argv[])
         {
           if ((*lineNumber == '\0' || *command == '\0') && !skipLine)
             {
-              printf ("%3d:%d: Unexpected line break\n", line, pos);
-              fatal = 1;
+              // printf ("%3d:%d: Unexpected line break\n", line, pos);
+              // fatal = 1;
               skipLine = 1;
             }
 

@@ -1,3 +1,4 @@
+#include "include/mySimpleComputer.h"
 #include <mySimpleComputer/sc_variables.h>
 
 int
@@ -13,7 +14,7 @@ sc_commandValidate (int value)
     return -1;
 
   for (int i = 0; i < COMMANDS_COUNT_TRUNCED; i++)
-    if (command == commands[i].code)
+    if (command == sc_commands[i].code)
       return 0;
   return -3;
 }

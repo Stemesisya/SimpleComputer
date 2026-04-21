@@ -9,6 +9,7 @@ BasicCommand basicProgram[MEMORY_SIZE] = { 0 };
 AssemblyCommand assemblyProgram[MEMORY_SIZE] = { 0 };
 
 int bp = 0;
+int bl = 0;
 int ap = 0;
 
 Command assignmentCommand = { "=", -1, OPADDR };

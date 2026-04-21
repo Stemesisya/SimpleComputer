@@ -13,7 +13,7 @@ rk_mytermsave ()
   saved->c_lflag = current->c_lflag;
   saved->c_line = current->c_line;
 
-  for (int i; i < NCCS; i++)
+  for (int i = 0; i < NCCS; i++)
     saved->c_cc[i] = current->c_cc[i];
   return 0;
 }

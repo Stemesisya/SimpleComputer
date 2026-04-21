@@ -12,7 +12,7 @@ value - куда будет записано целочисленное знач
 int
 sb_checkForConstant (char *operand, /*Nullable*/ int *value)
 {
-  printf ("Searching constant in '%s'\n", operand);
+  // printf ("Searching constant in '%s'\n", operand);
   int isNegative = operand[0] == '-';
   int startFrom = 0;
   if (isNegative)
@@ -24,16 +24,16 @@ sb_checkForConstant (char *operand, /*Nullable*/ int *value)
     {
       if ((isNegative && startFrom <= 1) || (!isNegative && startFrom < 1))
         {
-          printf ("%d: Expected constant.\n", bp);
+          printf ("Error at %d: Expected constant.\n", bl);
           return -1;
         }
-      printf ("%d: Variable should not start with digit.\n", bp);
+      printf ("Error at %d: Variable should not start with digit.\n", bl);
       return -1;
     }
   if (startFrom > 6)
     {
-      printf ("%d: Number '%.*s' has too many digits.\n", bp, startFrom,
-              operand);
+      printf ("Error at %d: Number '%.*s' has too many digits.\n", bl,
+              startFrom, operand);
       return -1;
     }
 
@@ -44,16 +44,16 @@ sb_checkForConstant (char *operand, /*Nullable*/ int *value)
   int ivalue = atoi (svalue);
   if (ivalue > MAX_ABSOLUTE_VALUE)
     {
-      printf ("%d: Number '%d' is too high.\n", bp, ivalue);
+      printf ("Error at %d: Number '%d' is too high.\n", bl, ivalue);
       return -1;
     }
   if (ivalue < -(MAX_ABSOLUTE_VALUE + 1))
     {
-      printf ("%d: Number '%d' is too low.\n", bp, ivalue);
+      printf ("Error at %d: Number '%d' is too low.\n", bl, ivalue);
       return -1;
     }
 
-  printf ("Found constant: '%.*s'\n", startFrom, operand);
+  // printf ("Found constant: '%.*s'\n", startFrom, operand);
 
   if (value != NULL)
     *value = ivalue;

@@ -19,17 +19,18 @@ sb_getAddressFromConstant (char *operand)
 
   if (addr < 0)
     {
-      printf ("%d: Address should not be negative\n", bp);
+      printf ("Error at %d: Address should not be negative\n", bl);
       return -1;
     }
   if (addr > 128)
     {
-      printf ("%d: Address overflow.\n", bp);
+      printf ("Error at %d: Address overflow.\n", bl);
       return -1;
     }
   if (operand[addrLen] != '\0')
     {
-      printf ("%d: Expected line break. Found '%c'.\n", bp, operand[addrLen]);
+      printf ("Error at %d: Expected line break. Found '%c'.\n", bl,
+              operand[addrLen]);
       return -1;
     }
   return addr;

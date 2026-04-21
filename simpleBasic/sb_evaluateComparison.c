@@ -12,12 +12,12 @@
 #define evalLeft()                                                            \
   if (sb_evaluateExpression (expression) != 0)                                \
     return -1;                                                                \
-  printf ("Successfully evaluated Left expression.\n")
+  // printf ("Successfully evaluated Left expression.\n")
 
 #define evalRight()                                                           \
   if (sb_evaluateExpression (expression + i + 1) != 0)                        \
     return -1;                                                                \
-  printf ("Successfully evaluated Right expression.\n")
+  // printf ("Successfully evaluated Right expression.\n")
 
 #define saveToTemporary()                                                     \
   int tmpVarAddr = sb_allocateTemporaryVariable ();                           \
@@ -51,7 +51,7 @@ sb_evaluateComparison (char *expression)
         case '>':
           if (1)
             {
-              printf ("Is '>' expression.\n");
+              // printf ("Is '>' expression.\n");
 
               // Left > Right   ===   Right - Left < 0
 
@@ -67,7 +67,7 @@ sb_evaluateComparison (char *expression)
         case '<':
           if (1)
             {
-              printf ("Is '<' expression.\n");
+              // printf ("Is '<' expression.\n");
 
               // Left < Right   ===   Left - Right < 0
 
@@ -83,7 +83,7 @@ sb_evaluateComparison (char *expression)
         case '=':
           if (1)
             {
-              printf ("Is '=' expression.\n");
+              // printf ("Is '=' expression.\n");
 
               // Left == Right   ===   Left - Right == 0
 
@@ -98,7 +98,7 @@ sb_evaluateComparison (char *expression)
             }
         }
     }
-  printf ("%d: Expected expression\n", bp);
+  printf ("Error at %d: Expected expression.\n", bl);
   return -1;
 }
 
@@ -116,6 +116,7 @@ sb_jumpIfAccumulator (int expressionType, int to)
       assemblyProgram[ap].command = sc_commands + 11; // JNEG
       assemblyProgram[ap].operand = to;
       assemblyProgram[ap].operandType = Raw;
+      assemblyProgram[ap].needsFurtherInvestigation = 1;
       ap++;
       break;
     case 3:
@@ -123,6 +124,7 @@ sb_jumpIfAccumulator (int expressionType, int to)
       assemblyProgram[ap].command = sc_commands + 12; // JZ
       assemblyProgram[ap].operand = to;
       assemblyProgram[ap].operandType = Raw;
+      assemblyProgram[ap].needsFurtherInvestigation = 1;
       ap++;
       break;
     default:

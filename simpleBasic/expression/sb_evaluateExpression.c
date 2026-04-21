@@ -51,7 +51,7 @@ sb_evaluateExpression (char *expression)
 
   if (expression[0] == '\0')
     {
-      printf ("%d: Expected expression. Got nothing.\n", bp);
+      printf ("Error at %d: Expected expression. Got nothing.\n", bl);
       return -1;
     }
 
@@ -70,7 +70,7 @@ sb_evaluateExpression (char *expression)
   for (; *expression != '\0'; expression++)
     {
 
-      printf ("> %s\n", expression);
+      // printf ("> %s\n", expression);
 
       //   printf ("> expr : ");
       //   for (int i = 0; i < fexprI; i++)
@@ -89,7 +89,7 @@ sb_evaluateExpression (char *expression)
           if (sb_getVariable (expression) == NULL)
             return -1;
           fexpr_append (*expression);
-          printf ("append %c (var)\n", *expression);
+          // printf ("append %c (var)\n", *expression);
           continue;
         }
       if (sb_isdigit (expression))
@@ -102,7 +102,7 @@ sb_evaluateExpression (char *expression)
           fexpr[fexprI][size] = '\0';
           fexprI++;
           expression += size - 1;
-          printf ("append %s (const)\n", fexpr[fexprI - 1]);
+          // printf ("append %s (const)\n", fexpr[fexprI - 1]);
           continue;
         }
 
@@ -126,7 +126,8 @@ sb_evaluateExpression (char *expression)
 
       do
         {
-          stack_pop (popitem, "%d: Not found matching closing bracket\n", bp);
+          stack_pop (popitem,
+                     "Error at %d: Not found matching closing bracket\n", bl);
           if (popitem == '(')
             break;
           fexpr_append (popitem);
@@ -144,25 +145,25 @@ sb_evaluateExpression (char *expression)
 
       if (popitem == '(')
         {
-          printf ("%d: Not found matching closing bracket\n", bp);
+          printf ("Error at %d: Not found matching closing bracket\n", bl);
           return -1;
         }
     }
 
-  printf ("\tExpression: ");
-  int pi = 0;
-  while (fexpr[pi][0] != '\0')
-    printf (" %s", fexpr[pi++]);
-  putchar ('\n');
+  // printf ("\tExpression: ");
+  // int pi = 0;
+  // while (fexpr[pi][0] != '\0')
+  //   printf (" %s", fexpr[pi++]);
+  // putchar ('\n');
 
-  if (sb_optimizeExpression (fexpr, bp) != 0)
+  if (sb_optimizeExpression (fexpr) != 0)
     return -1;
 
-  printf ("\tOptimized Expression: ");
-  pi = 0;
-  while (fexpr[pi][0] != '\0')
-    printf (" %s", fexpr[pi++]);
-  putchar ('\n');
+  // printf ("\tOptimized Expression: ");
+  // pi = 0;
+  // while (fexpr[pi][0] != '\0')
+  //   printf (" %s", fexpr[pi++]);
+  // putchar ('\n');
 
   return sb_expressionToAssembly (fexpr);
 }

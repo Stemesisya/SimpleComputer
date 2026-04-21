@@ -1,7 +1,6 @@
 #include "sb_variables.h"
 #include <fcntl.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -23,8 +22,22 @@ sb_toassembly (int limit)
   for (int i = 0; i < MEMORY_SIZE; i++)
     assemblyProgram[i].linkedBasicLine = -1;
 
+  int brokenLineNumbers = 0;
   for (; bp < limit; bp++)
     {
+      if (bl == basicProgram[bp].line)
+        {
+          printf ("Error at %d: Line number should not be repeated.\n", bp);
+          brokenLineNumbers = 1;
+          fatal ();
+        }
+      if (bl >= basicProgram[bp].line)
+        {
+          printf ("Error at %d: Line number should not go downwards.\n", bp);
+          brokenLineNumbers = 1;
+          fatal ();
+        }
+      bl = brokenLineNumbers ? bp : basicProgram[bp].line;
 
       char *operand = basicProgram[bp].operand;
 
@@ -43,8 +56,8 @@ sb_toassembly (int limit)
                 fatal ();
               if (operand[1] != '\0')
                 {
-                  printf ("%d: Expected line terminator. Got '%c'\n", bp,
-                          operand[1]);
+                  printf ("Error at %d: Expected line terminator. Got '%c'\n",
+                          bl, operand[1]);
                   fatal ();
                 }
 
@@ -65,8 +78,8 @@ sb_toassembly (int limit)
                 fatal ();
               if (operand[1] != '\0')
                 {
-                  printf ("%d: Expected line terminator. Got '%c'\n", bp,
-                          operand[1]);
+                  printf ("Error at %d: Expected line terminator. Got '%c'\n",
+                          bl, operand[1]);
                   fatal ();
                 }
 
@@ -116,12 +129,12 @@ sb_toassembly (int limit)
 
               if (matchLength == 0)
                 {
-                  printf ("%d: Expected GOTO keyword\n", bp);
+                  printf ("Error at %d: Expected GOTO keyword\n", bl);
                   fatal ();
                 }
 
-              printf ("[%c] Found GOTO: %.*s GOTO %s\n", operand[gotoPos],
-                      gotoPos, operand, operand + gotoPos + 4);
+              // printf ("[%c] Found GOTO: %.*s GOTO %s\n", operand[gotoPos],
+              // gotoPos, operand, operand + gotoPos + 4);
 
               operand[gotoPos] = '\0';
               int comparisonResult = sb_evaluateComparison (operand);
@@ -146,7 +159,7 @@ sb_toassembly (int limit)
 
               if (operand[1] != '=')
                 {
-                  printf ("%d: Expected assignment\n", bp);
+                  printf ("Error at %d: Expected assignment\n", bl);
                   fatal ();
                 }
 
@@ -166,15 +179,16 @@ sb_toassembly (int limit)
 
               if (haltCount >= 1)
                 {
-                  printf ("%d: Program should have 1 'END' command\n", bp);
+                  printf ("Error at %d: Program should have 1 'END' command\n",
+                          bl);
                   fatal ();
                 }
               haltCount++;
 
               if (operand[1] != '\0')
                 {
-                  printf ("%d: Expected line terminator. Got '%c'\n", bp,
-                          operand[0]);
+                  printf ("Error at %d: Expected line terminator. Got '%c'\n",
+                          bl, operand[0]);
                   fatal ();
                 }
 
@@ -186,97 +200,57 @@ sb_toassembly (int limit)
         }
     }
 
-  for (int i = 0; i < 26; i++)
-    {
-      if (definedVariables[i].aDefenitionPos == 0)
-        continue;
+  // for (int i = 0; i < 26; i++)
+  //   {
+  //     if (definedVariables[i].aDefenitionPos == 0)
+  //       continue;
 
-      int vap = definedVariables[i].aDefenitionPos;
-      char *comment = variableComments[vap];
-      assemblyProgram[vap].linkedBasicLine
-          = definedVariables[i].bDefenitionPos;
-      assemblyProgram[vap].command = &assignmentCommand; // =
-      assemblyProgram[vap].operand = 0;
-      assemblyProgram[vap].comment = comment;
-      comment[0] = 'A' + i;
-    }
+  //     int vap = definedVariables[i].aDefenitionPos;
+  //     char *comment = variableComments[vap];
+  //     assemblyProgram[vap].linkedBasicLine
+  //         = definedVariables[i].bDefenitionPos;
+  //     assemblyProgram[vap].command = &assignmentCommand; // =
+  //     assemblyProgram[vap].operand = 0;
+  //     assemblyProgram[vap].comment = comment;
+  //     comment[0] = 'A' + i;
+  //   }
 
-  for (int i = 0; i < constantsPoolSize; i++)
-    {
-      int cap0 = variablesPoolSize + definedConstants[i].aDefenitionPos;
-      int vap = MEMORY_SIZE - 1 - cap0;
-      char *comment = variableComments[cap0];
-      assemblyProgram[vap].linkedBasicLine
-          = definedVariables[i].bDefenitionPos;
-      assemblyProgram[vap].command = &assignmentCommand; // =
-      assemblyProgram[vap].operand = atoi (definedConstants[i].value);
-      assemblyProgram[vap].comment = comment;
-      strcpy (comment, definedConstants[i].value);
-    }
+  // for (int i = 0; i < constantsPoolSize; i++)
+  //   {
+  //     int cap0 = variablesPoolSize + definedConstants[i].aDefenitionPos;
+  //     int vap = MEMORY_SIZE - 1 - cap0;
+  //     char *comment = variableComments[cap0];
+  //     assemblyProgram[vap].linkedBasicLine
+  //         = definedVariables[i].bDefenitionPos;
+  //     assemblyProgram[vap].command = &assignmentCommand; // =
+  //     assemblyProgram[vap].operand = atoi (definedConstants[i].value);
+  //     assemblyProgram[vap].comment = comment;
+  //     strcpy (comment, definedConstants[i].value);
+  //   }
 
-  for (int i = 0; i < maxTempVariablesCount; i++)
-    {
-      int cap0 = variablesPoolSize + constantsPoolSize
-                 + definedConstants[i].aDefenitionPos;
-      int vap = MEMORY_SIZE - 1 - cap0;
-      char *comment = variableComments[cap0];
-      assemblyProgram[vap].linkedBasicLine = 0;
-      assemblyProgram[vap].command = &assignmentCommand; // =
-      assemblyProgram[vap].operand = 0;
-      assemblyProgram[vap].comment = comment;
-      strcpy (comment, "Tmp");
-    }
+  // for (int i = 0; i < maxTempVariablesCount; i++)
+  //   {
+  //     int cap0 = variablesPoolSize + constantsPoolSize
+  //                + definedConstants[i].aDefenitionPos;
+  //     int vap = MEMORY_SIZE - 1 - cap0;
+  //     char *comment = variableComments[cap0];
+  //     assemblyProgram[vap].linkedBasicLine = 0;
+  //     assemblyProgram[vap].command = &assignmentCommand; // =
+  //     assemblyProgram[vap].operand = 0;
+  //     assemblyProgram[vap].comment = comment;
+  //     strcpy (comment, "Tmp");
+  //   }
 
   if (fatal)
     return -1;
 
-  for (int i = 0; i < MEMORY_SIZE; i++)
-    {
-      AssemblyCommand c = assemblyProgram[i];
-      if (c.command == sc_commands && c.comment == NULL)
-        continue;
-
-      printf ("[b%d->a%d]\t%s\t%s:%6d ; %s %s\n", c.linkedBasicLine, i,
-              c.command->command,
-              c.operandType == Raw
-                  ? "Raw"
-                  : (c.operandType == Variable
-                         ? "Var"
-                         : (c.operandType == Constant ? "Int" : "Tmp")),
-              c.operand, c.comment,
-              c.needsFurtherInvestigation ? "[needsFurtherInvestigation]"
-                                          : "");
-    }
+  sb_printAss ();
 
   if (haltCount == 0)
     {
-      printf ("Program should have at least 1 'END' command\n");
+      printf ("Error: Program should have at least 1 'END' command\n");
       return -1;
     }
 
-  return 0;
-}
-
-int
-sb_saveAssembly (char *fileName)
-{
-
-  int foputput = open (fileName, O_WRONLY | O_CREAT);
-
-  if (foputput == -1)
-    {
-      printf ("Can't open or create file '%s'.\n", fileName);
-      return -3;
-    }
-
-  int cell = 0;
-  for (int i = 0; i < MEMORY_SIZE; i++)
-    {
-      sc_memoryGet (i, &cell);
-      write (foputput, &cell, sizeof (int));
-    }
-
-  close (foputput);
-  chmod (fileName, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
   return 0;
 }

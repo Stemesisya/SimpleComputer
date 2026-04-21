@@ -15,7 +15,7 @@ typedef struct STACK_NODE
 #define stack_peek() stack[stackSize - 1]
 
 int
-sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line)
+sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7])
 {
 
   int stackSize = 0;
@@ -46,7 +46,7 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line)
 
       if (stackSize <= 0)
         {
-          printf ("%d Invalid expression\n", line);
+          printf ("Error %d Invalid expression\n", bl);
           return -1;
         }
 
@@ -61,7 +61,7 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line)
 
       if (stackSize <= 0)
         {
-          printf ("%d Invalid expression\n", line);
+          printf ("%d Invalid expression\n", bl);
           return -1;
         }
 
@@ -85,15 +85,15 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line)
         case '/':
           if (b == 0)
             {
-              printf (
-                  "%d: Control point found division by 0 during evaluation.\n",
-                  line);
+              printf ("Error at %d: Control point found division by 0 during "
+                      "evaluation.\n",
+                      bl);
               return -1;
             }
           result = a / b;
           break;
         default:
-          printf ("%d Invalid operator '%c'\n", line,
+          printf ("Error %d Invalid operator '%c'\n", bl,
                   postfixExpression[pi][0]);
           return -1;
         }
@@ -101,9 +101,10 @@ sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line)
 
       if (result > MAX_ABSOLUTE_VALUE || result < -(MAX_ABSOLUTE_VALUE + 1))
         {
-          printf ("%d: Control point reached variable overflow during "
-                  "evaluation.\n",
-                  line);
+          printf (
+              "Error at %d: Control point reached variable overflow during "
+              "evaluation.\n",
+              bl);
           return -1;
         }
 

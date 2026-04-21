@@ -1,0 +1,7 @@
+10 LET A = 1
+20 INPUT B
+30 LET A = A * B
+40 LET B = B - (1)
+50 IF B < 1 GOTO 30
+60 PRINT A
+70 END

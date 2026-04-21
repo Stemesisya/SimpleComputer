@@ -4,9 +4,9 @@ int
 sb_determineCommand (int line, char *lineNumber, char *command)
 {
   int linenum;
-  if (sscanf (lineNumber, "%d", &linenum) != 1)
+  if (sscanf (lineNumber, "%d", &linenum) == 0)
     {
-      printf ("%3d: Unexpected symbols in lineId\n", line);
+      printf ("Error at %d: Unexpected symbols in lineId\n", line);
       return -1;
     }
 
@@ -18,6 +18,6 @@ sb_determineCommand (int line, char *lineNumber, char *command)
       basicProgram[line - 1].command = &basicCommandTypes[i];
       return 0;
     }
-  printf ("%3d: Unknown command '%s'\n", line, command);
+  printf ("Error at %d: Unknown command '%s'\n", line, command);
   return -1;
 }

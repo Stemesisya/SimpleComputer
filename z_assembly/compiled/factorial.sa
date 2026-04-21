@@ -1,0 +1,20 @@
+00  LOAD 7d ; 
+01 STORE 7f ; 
+02  READ 7e ; 
+03  LOAD 7f ; 
+04   MUL 7e ; 
+05 STORE 7f ; 
+06  LOAD 7e ; 
+07   SUB 7d ; 
+08 STORE 7e ; 
+09  LOAD 7e ; 
+0a STORE 7c ; 
+0b  LOAD 7d ; 
+0c   SUB 7c ; 
+0d  JNEG 03 ; 
+0e WRITE 7f ; 
+0f  HALT 00 ; 
+7c  = +0000 ; Tmp
+7d  = +0001 ; 1
+7e  = +0000 ; B
+7f  = +0000 ; A

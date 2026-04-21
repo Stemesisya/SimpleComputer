@@ -50,12 +50,11 @@ sb_expressionToAssembly (char expr[MEMORY_SIZE][7])
       if (expr[i][0] == '\0')
         break;
 
-      printf ("EtoA: current token '%s'\n", expr[i]);
+      // printf ("EtoA: current token '%s'\n", expr[i]);
 
       if (isalpha (expr[i][0]))
         {
           stack_push (expr[i]);
-
           continue;
         }
       if (sb_isdigit (expr[i]))
@@ -64,14 +63,14 @@ sb_expressionToAssembly (char expr[MEMORY_SIZE][7])
           continue;
         }
 
-      printf ("| stack: ");
-      for (int i = 0; i < stackSize; i++)
-        printf ("%s ", stack[i]);
-      putchar ('\n');
+      // printf ("| stack: ");
+      // for (int i = 0; i < stackSize; i++)
+      //   printf ("%s ", stack[i]);
+      // putchar ('\n');
 
       // Необходимо выгрузить аккумулятор и записать другое значение
-      printf ("| stackSize: %d, loadedOperand: %d\n", stackSize,
-              loadedOperand);
+      // printf ("| stackSize: %d, loadedOperand: %d\n", stackSize,
+      // loadedOperand);
       if (stackSize - loadedOperand > 1
           || (expr[i][0] == '/' /*несимметричная операция*/
               && stackSize - loadedOperand - 1 != 0))
@@ -90,7 +89,7 @@ sb_expressionToAssembly (char expr[MEMORY_SIZE][7])
               assemblyProgram[ap].needsFurtherInvestigation = 1;
               ap++;
 
-              printf ("| Storing into &%d.\n", storeInto);
+              // printf ("| Storing into &%d.\n", storeInto);
 
               for (int i = 0; i < stackSize; i++)
                 if (stack[i][0] == '~')
@@ -101,7 +100,7 @@ sb_expressionToAssembly (char expr[MEMORY_SIZE][7])
                   }
             }
 
-          printf ("| Loading '%s'\n", stack[stackSize - 2]);
+          // printf ("| Loading '%s'\n", stack[stackSize - 2]);
 
           assemblyProgram[ap].linkedBasicLine = bp;
           assemblyProgram[ap].command = sc_commands + 4; // LOAD
@@ -131,8 +130,9 @@ sb_expressionToAssembly (char expr[MEMORY_SIZE][7])
 
       if (expr[i][0] == '/' && strcmp (sa, "0") == 0)
         {
-          printf ("%d: Control point found division by 0 during evaluation.\n",
-                  bp);
+          printf ("Error at %d: Control point found division by 0 during "
+                  "evaluation.\n",
+                  bl);
           return -1;
         }
 
@@ -143,6 +143,12 @@ sb_expressionToAssembly (char expr[MEMORY_SIZE][7])
       sa[1] = '\0';
       loadedOperand = stackSize + 1;
       stack_push (sa);
+    }
+
+  if (stackSize > 1 && stack_peek ()[0] != '~')
+    {
+      printf ("Error: %d: Invalid expression. Not enough operators.\n", bl);
+      return -1;
     }
 
   return 0;

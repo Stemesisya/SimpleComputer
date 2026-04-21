@@ -3,6 +3,7 @@
 #include <console/console.h>
 #include <include/myReadKey.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 int selectedCell = 0;
@@ -105,9 +106,61 @@ systemListener (int key, int options)
 int
 main (int argc, char *argv[])
 {
+  char *font = "z_fonts/compiled/default.bin";
+  char *programToLoad = NULL;
+
   checkTty ();
   checkTerminalSize ();
-  loadFont (argc > 1 ? argv[1] : "font.bin");
+
+  char currentArgument = '?';
+  for (int i = 1; i < argc; i++)
+    {
+      printf ("argv[%d] = %s\n", i, argv[i]);
+      if (argv[i][0] == '-')
+        {
+          if (currentArgument != '?')
+            {
+              printf ("Flag '%s': previous flag without argument.\n", argv[i]);
+              return -1;
+            }
+          if (strlen (argv[i]) != 2)
+            {
+              printf ("Unexpected argument '%s'\n", argv[i]);
+              return -1;
+            }
+          currentArgument = argv[i][1];
+        }
+      switch (currentArgument)
+        {
+        case 'f':
+          if (i + 1 >= argc)
+            {
+              printf ("Expected font name after -f.\n");
+              return -1;
+            }
+          font = argv[++i];
+          break;
+        case 'p':
+          if (i + 1 >= argc)
+            {
+              printf ("Expected program name after -p.\n");
+              return -1;
+            }
+          programToLoad = argv[++i];
+          break;
+        default:
+          printf ("Unexpected argument '%s'\n", argv[i]);
+          return -1;
+        }
+      currentArgument = '?';
+    }
+  if (currentArgument != '?')
+    {
+      printf ("Last flag without argument.\n");
+      return -1;
+    }
+
+  loadFont (font);
   rk_init ();
 
   init_screen ();
@@ -118,6 +171,25 @@ main (int argc, char *argv[])
   sc_setStateListener (systemListener);
   sc_setSimulationDelay (0, 25000);
   IG_init ();
+
+  if (programToLoad != NULL)
+    {
+      mt_gotoXY (0, COMMAND_LINE_Y);
+      mt_delline ();
+      switch (sc_memoryLoad (programToLoad))
+        {
+        case 0:
+          write (1, "Loaded successfully.", 21);
+          l_reset ();
+          break;
+        case -2:
+          write (1, "Can't open file. Is path valid?", 32);
+          break;
+        case -3:
+          write (1, "Unexpected I/O error.", 22);
+          break;
+        }
+    }
 
   int notShouldExit = 1;
   Keys key = K_0;

@@ -17,7 +17,7 @@ typedef struct _BASIC_COMMAND_TYPE
 
 typedef struct _BASIC_COMMAND
 {
-  char line;
+  int line;
   BasicCommandType *command;
   char operand[1024];
 } BasicCommand;
@@ -46,6 +46,7 @@ typedef struct _ASSEMBLY_COMMAND
 {
   char needsFurtherInvestigation;
   char linkedBasicLine;
+  char isVariable;
   int operandType;
   int operand;
   Command *command;
@@ -57,6 +58,7 @@ extern AssemblyCommand assemblyProgram[MEMORY_SIZE];
 extern BasicCommand basicProgram[MEMORY_SIZE];
 
 extern int bp;
+extern int bl;
 extern int ap;
 
 extern char variableComments[MEMORY_SIZE][7];
@@ -74,6 +76,9 @@ int sb_isdigit (char *a);
 
 int sb_determineCommand (int line, char *lineNumber, char *command);
 int sb_toassembly (int limit);
+int sb_postprocess ();
+void sb_printAss ();
+int sb_saveToFile (char *fileName);
 
 // Выражения сравнения
 
@@ -83,7 +88,7 @@ int sb_jumpIfAccumulator (int expressionType, int to);
 // Выражения
 
 int sb_evaluateExpression (char *expression);
-int sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7], int line);
+int sb_optimizeExpression (char postfixExpression[MEMORY_SIZE][7]);
 int sb_expressionToAssembly (char expr[MEMORY_SIZE][7]);
 
 // Переменные

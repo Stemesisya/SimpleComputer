@@ -27,8 +27,16 @@ run-font: all
 run-tests: all
 	./console/.bin/tests.bin ${ARGS}
 
-run-trans: all
+run-trans-assembler: all
 	./simpleassembler/.bin/sat.bin ${ARGS}
 
 run-trans-basic: all
 	./simpleBasic/.bin/basic.bin ${ARGS}
+
+BASIC=
+BINARY=
+run-trans: all
+	./simpleBasic/.bin/basic.bin z_basic/${BASIC}.bas z_assembly/compiled/${BASIC}.sa
+	./simpleassembler/.bin/sat.bin z_assembly/compiled/${BASIC}.sa z_binaries/${BINARY}
+	@echo -e "\033[38;2;255;20;140mDone. (ꈍ ꒳ ꈍ✿)\033[0m"
+	./console/.bin/console.bin -p z_binaries/${BINARY} ${ARGS}

@@ -108,9 +108,12 @@ main (int argc, char *argv[])
 
       if (c == '\n' || c == EOF)
         {
+
+          // Пустая строчка.
           if (*lineNumber == '\0' && *command == '\0')
             {
               moveNextLine ();
+              line--;
               if (c == EOF)
                 break;
               continue;
@@ -118,24 +121,33 @@ main (int argc, char *argv[])
 
           if (!skipLine && line > MEMORY_SIZE)
             {
-              printf ("%3d: Program exeeds memory size.\n", line);
+              printf ("Error %3d: Program exeeds memory size.\n", line);
               fatal = 1;
               break;
             }
 
-          if (c == EOF)
+          if (!skipLine)
             {
-              if (stage == 1
-                  && sb_determineCommand (line, lineNumber, command) != 0)
+              switch (stage)
                 {
+                case 0:
+                  printf (
+                      "Error at %d:%d: Unexpected line terminator. Expected "
+                      "Command.\n",
+                      line, pos);
                   fatal = 1;
-                  skipLine = 1;
+                  break;
+                case 1:
+                  if (sb_determineCommand (line, lineNumber, command) != 0)
+                    fatal = 1;
+                  break;
                 }
+
               parseOperand (line, operand);
-              break;
             }
 
-          parseOperand (line, operand);
+          if (c == EOF)
+            break;
 
           moveNextLine ();
 
@@ -146,15 +158,18 @@ main (int argc, char *argv[])
       if (skipLine)
         continue;
 
-      // Убираем лишние пробелы, если имеем дело с операндами
+      // Комментарий оставляем в сыром виде
       if (isblank (c)
           && strcmp (basicProgram[line - 1].command->type, "REM") != 0)
         {
+
+          // Убираем лишние пробелы
           if (isblank (lastC))
             continue;
 
           if (stage <= 1)
             i = 0;
+
           stage++;
           if (stage == 2
               && sb_determineCommand (line, lineNumber, command) != 0)
@@ -169,19 +184,19 @@ main (int argc, char *argv[])
         {
         case 0:
           if (i >= 6)
-            fatal ("%3d:%d: Unexpected symbol '%c'\n", line, pos, c);
+            fatal ("Error %3d:%d: Line number overflow \n", line, pos);
           lineNumber[i++] = c;
           lineNumber[i] = '\0';
           break;
         case 1:
           if (i > 6)
-            fatal ("%3d:%d: Unknown command\n", line, pos - 5);
+            fatal ("Error %3d:%d: Unknown command\n", line, pos - 5);
           command[i++] = c;
           command[i] = '\0';
           break;
         default:
           if (i >= 1024)
-            fatal ("%3d:%d: Operand overflow\n", line, pos);
+            fatal ("Error %3d:%d: Operand overflow\n", line, pos);
           operand[i++] = c;
           operand[i] = '\0';
           break;
@@ -196,7 +211,12 @@ main (int argc, char *argv[])
   if (sb_toassembly (line) != 0)
     return -2;
 
-  // sb_saveAssembly(argv[2]);
+  if (sb_postprocess () != 0)
+    return -3;
+
+  sb_printAss ();
+
+  sb_saveToFile (argv[2]);
 
   return 0;
 }

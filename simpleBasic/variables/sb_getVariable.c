@@ -10,14 +10,14 @@
 BasicVariable *
 sb_getVariable (char *operand)
 {
-  printf ("Searching variable in '%s'.\n", operand);
+  // printf ("Searching variable in '%s'.\n", operand);
   if (*operand - 'A' < 0 || *operand - 'A' > 26)
     {
       int position = 0;
       if (isdigit (*operand))
-        printf ("%d: Expected variable. Got number: '", bp);
+        printf ("Error at %d: Expected variable. Got number: '", bl);
       else
-        printf ("%d: Illegal variable name: '", bp);
+        printf ("Error at %d: Illegal variable name: '", bl);
 
       while (isalnum (operand[position]))
         putchar (operand[position++]);
@@ -30,7 +30,8 @@ sb_getVariable (char *operand)
   if (isalpha (operand[1]))
     {
       int position = 0;
-      printf ("%d: Variable name should be 1 symbol length. Got '", bp);
+      printf ("Error at %d: Variable name should be 1 symbol length. Got '",
+              bl);
       while (!isalpha (operand[position]))
         putchar (operand[position++]);
       putchar ('\'');
